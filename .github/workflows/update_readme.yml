@@ -15,16 +15,19 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Set up Python
+       - name: Set up Poetry
         uses: actions/setup-python@v2
         with:
           python-version: '3.x'
 
+      - name: Install Poetry
+        run: curl -sSL https://install.python-poetry.org | python3 -
+
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: poetry install
 
       - name: Run update script
-        run: python update_readme.py
+        run: poetry run python update_readme.py
 
       - name: Commit changes
         run: |
