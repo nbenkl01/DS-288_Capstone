@@ -33,8 +33,6 @@ jobs:
 
       - name: Commit changes
         run: |
-          git config --global user.name 'github-actions'
-          git config --global user.email 'github-actions@github.com'
           git add README.md
           git commit -m 'Update README with latest status report'
           git push
