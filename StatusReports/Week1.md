@@ -11,7 +11,7 @@
 <!-- - The requirements for the proposal were somewhat unclear. I opted for a more generalized mission statement as the complete project consept is still incubating. -->
 <!-- - Similarly, i -->
 - It is unclear whether this report should be more narrative. As apparent, I opted for a bulletd list.
-<!-- - Faced difficulty in initial workflow setup. -->
+- Faced difficulty in initial workflow setup.
 
 ### Goals
 - Finalize/decide upon project concept.
