@@ -1,5 +1,5 @@
 ### Fails
-- Workflow issue, readme won't update. Apparent poetry issue?
+- Workflow issue, readme won't update. Apparent poetry issue \[ray?\]?
 
 ### Successes
 - Set up central repo for deliverables storage and project progress.
