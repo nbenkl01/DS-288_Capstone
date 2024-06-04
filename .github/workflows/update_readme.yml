@@ -19,20 +19,22 @@ jobs:
         with:
           python-version: '3.x'
 
-      # - name: Install Poetry
-      #   run: curl -sSL https://install.python-poetry.org | python3 -
+      - name: Install Poetry
+        run: curl -sSL https://install.python-poetry.org | python3 -
 
-      # - name: Install dependencies
-      #   run: poetry install
+      - name: Install dependencies
+        run: poetry install
 
-      # - name: Run update script
-      #   run: poetry run python update_readme.py
-      
       - name: Run update script
-        run: python update_readme.py
+        run: poetry run python update_readme.py
+      
+      # - name: Run update script
+      #   run: python update_readme.py
 
       - name: Commit changes
         run: |
+          git config --global user.name 'github-actions'
+          git config --global user.email 'github-actions@github.com'
           git add README.md
           git commit -m 'Update README with latest status report'
           git push
