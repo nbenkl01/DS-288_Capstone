@@ -1,5 +1,5 @@
 ### Fails
-- None to report
+- Workflow issue, readme won't update. Apparent poetry issue?
 
 ### Successes
 - Set up central repo for deliverables storage and project progress.
