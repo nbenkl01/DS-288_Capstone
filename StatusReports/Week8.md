@@ -1,12 +1,3 @@
-# Data Science Capstone Project
-
-Repository for work surrounding Tufts MSDS Capstone project.
-
-## Mission Statement (Project Proposal)
-
-My mission is to harness wearable device data to conduct personalized health risk assessments, identifying potential health issues that may require medical attention. By providing an initial health evaluation, we aim to prompt individuals to seek timely medical care, ultimately improving health outcomes.
-
-## Weekly Status Report (Week 8)
 ### Fails
 - No DUA Approval yet
 - CogWear data turned out to have no timestamp for stroop test so was only useful for simplistic (1-Cognitive Effort, 0-Resting) binary state classification
