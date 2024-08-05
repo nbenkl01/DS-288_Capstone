@@ -6,31 +6,17 @@ Repository for work surrounding Tufts MSDS Capstone project.
 
 My mission is to harness wearable device data to conduct personalized health risk assessments, identifying potential health issues that may require medical attention. By providing an initial health evaluation, we aim to prompt individuals to seek timely medical care, ultimately improving health outcomes.
 
-## Weekly Status Report (Week 9)
+## Weekly Status Report (Week 10)
 ### Fails
-- No DUA Approval yet
-- Failed to construct more complex model architectures (iTransformer/Transformer/LSTM) in time for competency demo submission.
+- DUA Rejected, needs PI or Advisor Signature
+- Less than completely productive week. 
 
 ### Successes
-- Completed Competency Demo.
-- Completed first-draft, structured data loading and modeling pipeline for use during next project phase.
-- Completed progress points from last week:
-  1. ~Clean E4 data using biomarker processing from last week's journal~
-  2. ~Extract important features from surveys (PANAS, SSSQ, STAI)~
-  3. ~Link activity-intermitent survey responses to end of wearable timeseries~
-- Completed lit-review for Design Document.
-- Parameterized "fallback" and "stretch" goals
+- Finally heard back from TILES data people at USC.
+- Found another dataset of potential use.
 
 ### General Progress
 - (In progress) Continue working on design document.
-- Continued work on prediction pipeline:
-    1. (In progress) Setting up iTransfromer architecture for predicting survey-relevant emotional signals from proceeding wearable timeseries.
-    2. (To-Do) Profile emotional states (GaussianMixtureModeling?).
-    3. (To-Do) Apply WESAD trained model to Exam Stress Dataset, Predict emotional state profiles.
-    4. (To-Do) Train classifier (RF, XGBoost, ...,? decide on alg) to predict exam performance from emotional state profile.
-       - Train on first two tests.
-       - Test on second two tests.
-    5. (To-Do) Create integrated pipeline to predict individual's cognitive state profile from wearable datastream and signal individual when profile trajectory likely to lead to performance decrease.
 
 ### Goals
-- Continue work on design document.
+- Finish design document.
