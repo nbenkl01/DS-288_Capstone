@@ -8,19 +8,13 @@ My mission is to harness wearable device data to conduct personalized health ris
 
 ## Weekly Status Report (Week 12--see ./StatusReports/ for Week 11)
 ### Fails
-- Attempted (failed) to mount TILES on AWS E2 virtual compute server.
-- Attempted (failed) to transfer tiles to GCP bucket.
+- Low productivity week (still need to finish modified schedule)
 
 ### Successes
-- Found E4SelfLearning data repository and E4mer code repository
-- Replicated data preprocessing & segmentation work from [Corponi et al., 2024](https://pubmed.ncbi.nlm.nih.gov/39018100/)
-- Replicated SSL E4mer pretraining over masked prediction as described in same.
+- Cleaned Nurse's Data for binary stress state prediction (0 -> 0-Nonstress, 1 or 2 -> 1-Stress)
 
 ### General Progress
-- Decided to stop persuing TILES analysis.
-- Met w/ Marty & reviewed Design Document.
-  - Decided Design Doc proposal was overly ambitios.
-- Began isolating more achievable study question for remaining term.
 
 ### Goals
-- Decide upon new study question subset of proposal.
+- Finish modified schedule
+- Finetune E4mer on WESAD binary stress state prediction
