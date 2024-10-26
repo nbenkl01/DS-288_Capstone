@@ -8,8 +8,8 @@ from transformers import (
 import requests
 from src.model.data import fetch_data#fetch_next_batch, preprocess_batch
 from src.data import preprocess
-from config import configure_model, pretrain_training_args, classify_training_args
-from utils import setup_early_stopping, evaluate_and_save_model
+from src.model.config import configure_model, pretrain_training_args, classify_training_args
+from src.model.utils import setup_early_stopping, evaluate_and_save_model
 from src.STATIC import ROOT_DIR
 
 
