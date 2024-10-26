@@ -10,6 +10,7 @@ from src.model.data import fetch_data#fetch_next_batch, preprocess_batch
 from src.data import preprocess
 from config import configure_model, pretrain_training_args, classify_training_args
 from utils import setup_early_stopping, evaluate_and_save_model
+from src.STATIC import ROOT_DIR
 
 
 def train_model(model, train_dataset, val_dataset, training_args, early_stopping_callback):
@@ -39,8 +40,8 @@ def pretrain(dataset_code,
              input_columns, 
              finetune = False,
             pretrained_model_dir = None,
-            checkpoint_dir="./checkpoint/unlabelled_pretrain/",
-             save_dir="./models/unlabelled_pretrain/", train_epochs=100, 
+            checkpoint_dir=os.path.join(ROOT_DIR, "checkpoint/unlabelled_pretrain"),
+             save_dir=os.path.join(ROOT_DIR, "models/unlabelled_pretrain"), train_epochs=100, 
              context_length=512, prediction_length=96, patch_length=8,
              num_workers=16, batch_size=16):
     
@@ -71,9 +72,9 @@ def pretrain(dataset_code,
 def train_classifier(dataset_code,
                      input_columns, target_columns,
                      finetune = True,
-                        pretrained_model_dir = "./models/unlabelled_pretrain/",
-                         checkpoint_dir="./checkpoint/stress_event_finetune/",
-                         save_dir="./models/stress_event_finetune/", 
+                        pretrained_model_dir = os.path.join(ROOT_DIR, "models/unlabelled_pretrain"),
+                         checkpoint_dir=os.path.join(ROOT_DIR, "checkpoint/stress_event_finetune"),
+                         save_dir=os.path.join(ROOT_DIR, "models/stress_event_finetune"), 
                          train_epochs=100, 
                          context_length=512, prediction_length=96,
                          patch_length=8, num_workers=16, batch_size=16):
