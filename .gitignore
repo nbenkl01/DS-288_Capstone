@@ -164,5 +164,6 @@ cython_debug/
 
 #Files To Ignore
 benkler-E4mer/src/STATIC.py
+benkler-E4mer/src/data/streaming/*
 models/*
 checkpoints/*
