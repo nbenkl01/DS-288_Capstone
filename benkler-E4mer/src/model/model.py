@@ -9,11 +9,11 @@ import requests
 from src.model.data import fetch_data#fetch_next_batch, preprocess_batch
 from src.data import preprocess
 from src.model.config import configure_model, pretrain_training_args, classify_training_args
-from src.model.utils import setup_early_stopping, evaluate_and_save_model
+from src.model.utils import setup_early_stopping, evaluate_and_save_model, compute_metrics
 from src.STATIC import ROOT_DIR
 
 
-def train_model(model, train_dataset, val_dataset, training_args, early_stopping_callback):
+def train_model(model, train_dataset, val_dataset, training_args, early_stopping_callback, compute_metrics = None):
     """Initializes and trains the model using the Trainer API."""
     
 #     def compute_metrics(eval_pred):
@@ -28,7 +28,7 @@ def train_model(model, train_dataset, val_dataset, training_args, early_stopping
         args=training_args,
         train_dataset=train_dataset,
         eval_dataset=val_dataset,
-#         compute_metrics = compute_metrics,
+        compute_metrics = compute_metrics,
         callbacks=[early_stopping_callback],
     )
     trainer.train()
@@ -107,7 +107,8 @@ def train_classifier(dataset_code,
                                                                                 id_columns = id_columns)
 
     # Train model in batches to handle memory and storage constraints
-    trainer = train_model(model, train_dataset, val_dataset, training_args, early_stopping_callback)
+    trainer = train_model(model, train_dataset, val_dataset, training_args, early_stopping_callback,
+                          compute_metrics = compute_metrics)
 
     # Evaluate and save model
     evaluate_and_save_model(trainer, test_dataset, save_dir)
