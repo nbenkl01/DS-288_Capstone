@@ -41,12 +41,14 @@ def pretrain(dataset_code,
              finetune = False,
             pretrained_model_dir = None,
             checkpoint_dir=os.path.join(ROOT_DIR, "checkpoint/unlabelled_pretrain"),
-             save_dir=os.path.join(ROOT_DIR, "models/unlabelled_pretrain"), train_epochs=100, 
+             save_dir=os.path.join(ROOT_DIR, "models/unlabelled_pretrain"), 
+             run_name = 'unlabelled_pretrain',
+             train_epochs=100, 
              context_length=512, prediction_length=96, patch_length=8,
              num_workers=16, batch_size=16):
     
     config = configure_model(input_columns, context_length, prediction_length, patch_length)
-    training_args = pretrain_training_args(checkpoint_dir, train_epochs, batch_size, num_workers, input_columns)
+    training_args = pretrain_training_args(checkpoint_dir, train_epochs, batch_size, num_workers, input_columns, run_name = run_name)
     early_stopping_callback = setup_early_stopping()
     
     if finetune and os.path.exists(pretrained_model_dir):
@@ -76,13 +78,15 @@ def train_classifier(dataset_code,
                         pretrained_model_dir = os.path.join(ROOT_DIR, "models/unlabelled_pretrain"),
                          checkpoint_dir=os.path.join(ROOT_DIR, "checkpoint/stress_event_finetune"),
                          save_dir=os.path.join(ROOT_DIR, "models/stress_event_finetune"), 
+                         run_name = 'classifier_finetune',
                          train_epochs=100, 
                          context_length=512, prediction_length=96,
                          patch_length=8, num_workers=16, batch_size=16):
     
     config = configure_model(input_columns, context_length, prediction_length, patch_length)
     training_args = classify_training_args(checkpoint_dir, train_epochs, batch_size, num_workers,
-                                            input_columns,target_columns
+                                            input_columns,target_columns,
+                                            run_name = run_name
                                           )
     early_stopping_callback = setup_early_stopping()
 

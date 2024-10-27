@@ -25,7 +25,7 @@ def configure_model(input_columns, context_length, prediction_length, patch_leng
         scaling="std",
     )
 
-def pretrain_training_args(checkpoint_dir, train_epochs, batch_size, num_workers, input_columns):
+def pretrain_training_args(checkpoint_dir, train_epochs, batch_size, num_workers, input_columns, run_name = None):
     """
     Sets up training arguments for the trainer.
     See: https://huggingface.co/docs/transformers/v4.46.0/en/main_classes/trainer#transformers.TrainingArguments
@@ -42,6 +42,7 @@ def pretrain_training_args(checkpoint_dir, train_epochs, batch_size, num_workers
         per_device_eval_batch_size=batch_size,
         dataloader_num_workers=num_workers,
         report_to="wandb",
+        run_name = run_name,
         save_strategy="epoch",
         logging_strategy="epoch",
         save_total_limit=3,
@@ -53,7 +54,7 @@ def pretrain_training_args(checkpoint_dir, train_epochs, batch_size, num_workers
     )
 
 def classify_training_args(checkpoint_dir, train_epochs, batch_size, num_workers,
-                           input_columns, target_columns):
+                           input_columns, target_columns, run_name = None):
     """
     Sets up training arguments for the trainer.
     See: https://huggingface.co/docs/transformers/v4.46.0/en/main_classes/trainer#transformers.TrainingArguments
@@ -70,6 +71,7 @@ def classify_training_args(checkpoint_dir, train_epochs, batch_size, num_workers
         per_device_eval_batch_size=batch_size,
         dataloader_num_workers=num_workers,
         report_to="wandb",
+        run_name = run_name,
         save_strategy="epoch",
         logging_strategy="epoch",
         save_total_limit=3,
