@@ -1,8 +1,10 @@
+import os
 from tsfm_public.toolkit.dataset import PretrainDFDataset
 from tsfm_public.toolkit.time_series_preprocessor import TimeSeriesPreprocessor
 import pandas as pd
-import requests
-from src.STATIC import API_KEY
+# from src.data import load, preprocess
+import requests  # For streaming data from the local server
+from src.STATIC import API_KEY, ROOT_DIR
 
 
 def preprocess_batch(batch_data, timestamp_column, input_columns, id_columns, context_length, tsp=None):
@@ -41,14 +43,26 @@ def preprocess_batch(batch_data, timestamp_column, input_columns, id_columns, co
 #     return response.json()  # Assuming JSON format; adjust if necessary
 
 
-def fetch_data(dataset_code):
-    response = requests.get(f"http://localhost:3116/get_datasets?dataset_code={dataset_code}",
-                            headers={"x-api-key": API_KEY})
-    response.raise_for_status()  # Ensure the request was successful
-    response_json = response.json()  # Assuming JSON format; adjust if necessary
-    train_data = pd.read_json(response_json['train_json'], orient='records')
-    val_data = pd.read_json(response_json['val_json'], orient='records')
-    test_data = pd.read_json(response_json['test_json'], orient='records')
+def fetch_data(dataset_code, location = 'local'):
+    if location == 'remote':
+        response = requests.get(f"http://localhost:3116/get_datasets?dataset_code={dataset_code}",
+                                headers={"x-api-key": API_KEY})
+        response.raise_for_status()  # Ensure the request was successful
+        response_json = response.json()  # Assuming JSON format; adjust if necessary
+        train_data = pd.read_json(response_json['train_json'], orient='records')
+        val_data = pd.read_json(response_json['val_json'], orient='records')
+        test_data = pd.read_json(response_json['test_json'], orient='records')
+    else:
+        data_dir = os.path.join(ROOT_DIR, f'./e4data/train_test_split/{dataset_code}')
+        train_file = os.path.join(data_dir, 'train_data.csv')
+        val_file = os.path.join(data_dir, 'val_data.csv')
+        test_file = os.path.join(data_dir, 'test_data.csv')
+
+        # Read the CSV files
+        train_data = pd.read_csv(train_file)
+        val_data = pd.read_csv(val_file)
+        test_data = pd.read_csv(test_file)
+
 
     for dataset in [train_data, val_data, test_data]:
         dataset['datetime'] = pd.to_datetime(dataset['datetime'])
