@@ -54,8 +54,9 @@ def pretrain(dataset_code,
     else:
         model = PatchTSMixerForPretraining(config)
 
-    train_data, val_data, test_data = fetch_data(dataset_code)
-    train_dataset, val_dataset, test_dataset = preprocess.preprocess_pretraining_datasets(
+    data_loc = 'local' if os.path.exists(os.path.join(ROOT_DIR, f'./e4data/train_test_split/{dataset_code}')) else 'remote'
+    train_data, val_data, test_data = fetch_data(dataset_code, location = data_loc)
+    _, train_dataset, val_dataset, test_dataset = preprocess.preprocess_pretraining_datasets(
                                                                                 train_data,
                                                                                 val_data,
                                                                                 test_data,                                              
@@ -91,8 +92,9 @@ def train_classifier(dataset_code,
         model = PatchTSMixerForTimeSeriesClassification(config)
 
 
-    train_data, val_data, test_data = fetch_data(dataset_code)
-    train_dataset, val_dataset, test_dataset = preprocess.preprocess_finetuning_datasets(
+    data_loc = 'local' if os.path.exists(os.path.join(ROOT_DIR, f'./e4data/train_test_split/{dataset_code}')) else 'remote'
+    train_data, val_data, test_data = fetch_data(dataset_code, location = data_loc)
+    _, train_dataset, val_dataset, test_dataset = preprocess.preprocess_finetuning_datasets(
                                                                                 train_data,
                                                                                 val_data,
                                                                                 test_data,                                              
