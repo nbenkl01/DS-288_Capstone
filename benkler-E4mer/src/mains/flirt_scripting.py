@@ -3,9 +3,9 @@ import argparse
 from src.data import load
 from src.STATIC import ROOT_DIR
 
-def load_and_process_unlabelled():
+def load_and_process_unlabelled(batch_size):
     unlabelled_dir = os.path.join(ROOT_DIR, 'e4data/unlabelled_data/raw')
-    unread_files_path = os.path.join(ROOT_DIR, 'e4data/unlabelled/unread_files.txt')
+    unread_files_path = os.path.join(ROOT_DIR, 'e4data/flirt_processed/unlabelled/unread_files.txt')
     save_filepath = os.path.join(ROOT_DIR, 'e4data/flirt_processed/unlabelled/unlabelled_flirt.csv')
 
     unread_files = []
@@ -15,14 +15,15 @@ def load_and_process_unlabelled():
     f.close()
 
     unreadable_files = load.batch_load_unlabelled_e4data(unlabelled_dir, subset=unread_files, 
+                                                         batch_size = batch_size,
                                                          save_filepath = save_filepath)
     with open(unread_files_path, 'w') as f:
         for file in unreadable_files:
             f.write(f"{file}\n")
 
-def load_and_process_Nurses():
+def load_and_process_Nurses(batch_size):
     nurse_dir = os.path.join(ROOT_DIR, '../../Summer 2024/DS-288_Capstone/Data:Code Sources/Stressed Nurses/Stress_dataset')
-    unread_files_path = os.path.join(ROOT_DIR, 'e4data/Nurses/unread_files.txt')
+    unread_files_path = os.path.join(ROOT_DIR, 'e4data/flirt_processed/Nurses/unread_files.txt')
     save_filepath = os.path.join(ROOT_DIR, 'e4data/flirt_processed/Nurses/Nurses_flirt.csv')
 
     # unread_files = []
@@ -32,14 +33,15 @@ def load_and_process_Nurses():
     # f.close()
 
     unreadable_files = load.batch_load_nurses_e4data(nurse_dir,
+                                                     batch_size = batch_size,
                                                      save_filepath = save_filepath)
     with open(unread_files_path, 'w') as f:
         for file in unreadable_files:
             f.write(f"{file}\n")
 
-def load_and_process_WESAD():
+def load_and_process_WESAD(batch_size):
     WESAD_dir = os.path.join(ROOT_DIR, '../../Summer 2024/DS-288_Capstone/Data:Code Sources/WESAD')
-    unread_files_path = os.path.join(ROOT_DIR, 'e4data/WESAD/unread_files.txt')
+    unread_files_path = os.path.join(ROOT_DIR, 'e4data/flirt_processed/WESAD/unread_files.txt')
     save_filepath = os.path.join(ROOT_DIR, 'e4data/flirt_processed/WESAD/WESAD_flirt.csv')
 
     # unread_files = []
@@ -49,6 +51,7 @@ def load_and_process_WESAD():
     # f.close()
 
     unreadable_files = load.batch_load_WESAD_e4data(WESAD_dir,
+                                                    batch_size,
                                                      save_filepath = save_filepath)
     with open(unread_files_path, 'w') as f:
         for file in unreadable_files:
