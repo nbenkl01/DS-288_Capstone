@@ -38,6 +38,7 @@ def train_model(model, train_dataset, val_dataset, training_args, early_stopping
 # Main function to initiate pretraining
 def pretrain(dataset_code,
              input_columns, 
+             id_columns = [],
              finetune = False,
             pretrained_model_dir = None,
             checkpoint_dir=os.path.join(ROOT_DIR, "checkpoint/unlabelled_pretrain"),
@@ -63,7 +64,7 @@ def pretrain(dataset_code,
                                                                                 val_data,
                                                                                 test_data,                                              
                                                                                 # target_columns = target_columns,
-                                                                                id_columns = ['source_data'])
+                                                                                id_columns = id_columns)
 
     # Train model in batches to handle memory and storage constraints
     trainer = train_model(model, train_dataset, val_dataset, training_args, early_stopping_callback)
@@ -73,7 +74,7 @@ def pretrain(dataset_code,
 
 
 def train_classifier(dataset_code,
-                     input_columns, target_columns,
+                     input_columns, target_columns, id_columns = [],
                      finetune = True,
                         pretrained_model_dir = os.path.join(ROOT_DIR, "models/unlabelled_pretrain"),
                          checkpoint_dir=os.path.join(ROOT_DIR, "checkpoint/stress_event_finetune"),
@@ -103,7 +104,7 @@ def train_classifier(dataset_code,
                                                                                 val_data,
                                                                                 test_data,                                              
                                                                                 target_columns = target_columns,
-                                                                                id_columns = [])
+                                                                                id_columns = id_columns)
 
     # Train model in batches to handle memory and storage constraints
     trainer = train_model(model, train_dataset, val_dataset, training_args, early_stopping_callback)
