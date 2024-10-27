@@ -46,6 +46,46 @@ def load_unlabelled_e4data(unlabelled_dir, subset = None):
     return collected_data, unreadable_files
 
 
+def batch_load_unlabelled_e4data(unlabelled_dir, batch_size=20, save_filepath=None, subset = None):
+    if type(subset)==list:
+        zip_files = subset
+    else:
+        zip_files = [f for f in os.listdir(unlabelled_dir) if f.endswith('.zip')]
+    unreadable_files = []
+    collected_data = pd.DataFrame([])
+
+    # Load and process in batches
+    for i in tqdm(range(0, len(zip_files), batch_size), desc="Processing zip files in batches"):
+        batch_files = zip_files[i:i + batch_size]
+        batch_data = pd.DataFrame([])
+
+        for zip_file in batch_files:
+            try:
+                zip_file_path = os.path.join(unlabelled_dir, zip_file)
+                # Load the Empatica E4 data using the flirt library
+                data = flirt.with_.empatica(zip_file_path)
+                data = data.reset_index(names=['datetime'])
+                data['source_id'] = zip_file
+                split_zf = zip_file.split('_')
+                dataset = split_zf[split_zf.index('unlabelled') + 2] if 'unlabelled' in split_zf else split_zf[0]
+                data['dataset'] = dataset
+                data = data.set_index(['source_id', 'datetime'])
+
+                batch_data = pd.concat([batch_data, data])
+
+            except:
+                unreadable_files.append(zip_file)
+
+        # Incrementally save each batch
+        if not batch_data.empty:
+            if save_filepath and os.path.exists(save_filepath):
+                batch_data.reset_index().to_csv(save_filepath, mode='a', index=False, header=False)
+            else:
+                batch_data.reset_index().to_csv(save_filepath, index=False)
+
+    return collected_data, unreadable_files
+
+
 
 # Labelled
 def assign_conditions(df, condition_periods):
@@ -100,6 +140,47 @@ def load_WESAD_e4data(WESAD_path, subset = None):
             unreadable_files.append(f"{subject}_E4_Data.zip")
             
     return collected_data, unreadable_files
+
+
+# WESAD Data Loading with Batching and Incremental Saving
+def batch_load_WESAD_e4data(WESAD_path, subset=None, batch_size=10, save_filepath=None):
+    unreadable_files = []
+    if type(subset)==list:
+        subjects = subset
+    else:
+        subjects = [s for s in os.listdir(WESAD_path) if s not in ['.DS_Store', 'wesad_readme.pdf', 'labelled']]
+        if type(subset)==int:
+            subjects = subjects[:subset]
+
+    for i in tqdm(range(0, len(subjects), batch_size), desc="Processing WESAD subjects in batches"):
+        batch_subjects = subjects[i:i + batch_size]
+        batch_data = pd.DataFrame([])
+
+        for subject in batch_subjects:
+            try:
+                zip_file_path = os.path.join(WESAD_path, subject, f"{subject}_E4_Data.zip")
+                data = flirt.with_.empatica(zip_file_path)
+                loader = utils.SurveyDataLoader(WESAD_path, subject)
+                data = assign_conditions(data.copy(), loader.condition_intervals)
+                data = data.reset_index(names=['datetime'])
+                data['subject_id'] = subject
+                data = data.set_index(['subject_id', 'datetime'])
+
+                batch_data = pd.concat([batch_data, data])
+
+            except:
+                unreadable_files.append(f"{subject}_E4_Data.zip")
+
+        # Incrementally save each batch
+        if not batch_data.empty:
+            if save_filepath and os.path.exists(save_filepath):
+                batch_data.reset_index().to_csv(save_filepath, mode='a', index=False, header=False)
+            else:
+                batch_data.reset_index().to_csv(save_filepath, index=False)
+
+    return unreadable_files
+
+
 
 ## Stressed Nurses
 def create_condition_intervals(file_path, target_id):
@@ -218,3 +299,49 @@ def load_nurses_e4data(nurse_path, subset = None):
                 unreadable_files.append(zip_file_path)
             
     return collected_data, unreadable_files
+
+
+# Nurses Data Loading with Batching and Incremental Saving
+def batch_load_nurses_e4data(nurse_path, subset=None, batch_size=10, save_filepath=None):
+    unreadable_files = []
+    if type(subset)==list:
+        nurses = subset
+    else:
+        nurses = [str(n) for n in os.listdir(nurse_path) if n not in ['.DS_Store', 'wesad_readme.pdf', 'labelled']]
+        if type(subset)==int:
+            nurses = nurses[:subset]
+
+    for i in tqdm(range(0, len(nurses), batch_size), desc="Processing Nurses in batches"):
+        batch_nurses = nurses[i:i + batch_size]
+        batch_data = pd.DataFrame([])
+
+        for nurse in batch_nurses:
+            nurse_condition_intervals = create_condition_intervals(os.path.join(nurse_path, '../SurveyResults.xlsx'), nurse)
+            nurse_dir = os.path.join(nurse_path, nurse)
+            zip_filenames = [name for name in os.listdir(nurse_dir)]
+            if subset:
+                zip_filenames = zip_filenames[:subset]
+
+            for zip_file_name in zip_filenames:
+                zip_file_path = os.path.join(nurse_dir, zip_file_name)
+                try:
+                    data = flirt.with_.empatica(zip_file_path)
+                    data = assign_conditions(data.copy(), nurse_condition_intervals)
+                    data['condition'] = data.condition.apply(lambda x: x.split('_')[-1] if isinstance(x, str) else x)
+                    data = data.reset_index(names=['datetime'])
+                    data['subject_id'] = nurse
+                    data = data.set_index(['subject_id', 'datetime'])
+
+                    batch_data = pd.concat([batch_data, data])
+
+                except:
+                    unreadable_files.append(zip_file_path)
+
+        # Incrementally save each batch
+        if not batch_data.empty:
+            if save_filepath and os.path.exists(save_filepath):
+                batch_data.reset_index().to_csv(save_filepath, mode='a', index=False, header=False)
+            else:
+                batch_data.reset_index().to_csv(save_filepath, index=False)
+
+    return unreadable_files
