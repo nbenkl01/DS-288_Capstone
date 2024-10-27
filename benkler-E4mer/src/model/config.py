@@ -33,7 +33,7 @@ def pretrain_training_args(checkpoint_dir, train_epochs, batch_size, num_workers
     return TrainingArguments(
         output_dir=os.path.join(checkpoint_dir, "output"),
         overwrite_output_dir=True,
-        use_mps_device = True if torch.backends.mps.is_available() else False, # Use Mac MPS
+        # use_mps_device = True if torch.backends.mps.is_available() else False, # Use Mac MPS
         learning_rate=0.001,
         num_train_epochs=train_epochs,
         do_eval=True,
@@ -62,7 +62,7 @@ def classify_training_args(checkpoint_dir, train_epochs, batch_size, num_workers
     return TrainingArguments(
         output_dir=os.path.join(checkpoint_dir, "output"),
         overwrite_output_dir=True,
-        use_mps_device = True if torch.backends.mps.is_available() else False, # Use Mac MPS
+        # use_mps_device = True if torch.backends.mps.is_available() else False, # Use Mac MPS
         learning_rate=0.001,
         num_train_epochs=train_epochs,
         do_eval=True,
