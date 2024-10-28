@@ -132,11 +132,13 @@ def preprocess_pretraining_datasets(train_data, val_data, test_data,
 def preprocess_finetuning_datasets(train_data, val_data, test_data,
                         timestamp_column = "datetime",
                         input_columns =['acc_l2_mean','hrv_cvsd','eda_tonic_mean','eda_phasic_mean'],
-                        target_columns = ['binary_stress'],
+                        target_columns = 'binary_stress',
+                        # target_columns = ['binary_stress'],
                         id_columns = ['subject_id'],
                         context_length = 512):
     
-    relevant_columns = [timestamp_column]+id_columns+input_columns+target_columns
+    # relevant_columns = [timestamp_column]+id_columns+input_columns+target_columns
+    relevant_columns = [timestamp_column]+id_columns+input_columns+[target_columns]
     train_data = train_data.loc[:,relevant_columns].copy()
     val_data = val_data.loc[:,relevant_columns].copy()
     test_data = test_data.loc[:,relevant_columns].copy()
@@ -144,8 +146,8 @@ def preprocess_finetuning_datasets(train_data, val_data, test_data,
     tsp = TimeSeriesPreprocessor(
         timestamp_column=timestamp_column,
         id_columns=id_columns,
-        input_columns=input_columns,
-        target_columns= target_columns,
+        observable_columns=input_columns,
+        target_columns= [target_columns],
         context_length=context_length,
         scaling=True,
     )
