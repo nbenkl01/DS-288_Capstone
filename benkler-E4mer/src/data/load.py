@@ -277,7 +277,7 @@ def load_nurses_e4data(nurse_path, subset = None):
         nurses = nurses[:subset]
         
     for nurse in tqdm(nurses):
-        nurse_condition_intervals = create_condition_intervals(os.path.join(nurse_path, '../SurveyResults.xlsx'), nurse)
+        nurse_condition_intervals = create_condition_intervals(os.path.join(nurse_path, '../SurveyResults.xlsx'), int(nurse) if nurse.isnumeric() else nurse)
         nurse_dir = os.path.join(nurse_path, nurse)
         zip_filenames = [name for name in os.listdir(nurse_dir)]
         if subset:
