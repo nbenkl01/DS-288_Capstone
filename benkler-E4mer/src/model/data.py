@@ -68,3 +68,10 @@ def fetch_data(dataset_code, location = 'local'):
         dataset['datetime'] = pd.to_datetime(dataset['datetime'])
 
     return train_data, val_data, test_data
+
+
+def clean_data(data, label_column, input_columns):
+    data['label']=data[label_column].astype(float)
+    for col in input_columns:
+        data[col] = data[col].astype(float)
+    return data

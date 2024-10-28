@@ -5,7 +5,7 @@ from transformers import (
     TrainingArguments,
 )
 
-def configure_model(input_columns, context_length, prediction_length, patch_length):
+def configure_masked_transformer(input_columns, context_length, prediction_length, patch_length):
     """
     Configures the PatchTSMixer model with specified parameters.
     See: https://huggingface.co/docs/transformers/v4.46.0/en/model_doc/patchtsmixer#transformers.PatchTSMixerConfig
@@ -21,6 +21,30 @@ def configure_model(input_columns, context_length, prediction_length, patch_leng
         expansion_factor=2,
         dropout=0.2,
         head_dropout=0.2,
+        mode="mix_channel",
+        scaling="std",
+    )
+
+def configure_classifier(input_columns, context_length, #prediction_length,
+                          patch_length):
+    """
+    Configures the PatchTSMixer model with specified parameters.
+    See: https://huggingface.co/docs/transformers/v4.46.0/en/model_doc/patchtsmixer#transformers.PatchTSMixerConfig
+    """
+    return PatchTSMixerConfig(
+        context_length=context_length,
+        # prediction_length=prediction_length,
+        patch_length=patch_length,
+        num_input_channels=len(input_columns),
+        patch_stride=patch_length,
+        d_model=2 * patch_length,
+        num_layers=8,
+        expansion_factor=2,
+        dropout=0.2,
+        head_dropout=0.2,
+        num_targets = 2,
+        # output_range = [0,1],
+        # use_return_dict = True,
         mode="mix_channel",
         scaling="std",
     )
@@ -77,7 +101,9 @@ def classify_training_args(checkpoint_dir, train_epochs, batch_size, num_workers
         save_total_limit=3,
         logging_dir=os.path.join(checkpoint_dir, "logs"),
         load_best_model_at_end=True,
-        metric_for_best_model="eval_f1",
-        greater_is_better=True,
-        label_names=target_columns,
+        # metric_for_best_model="eval_f1",
+        # greater_is_better=True,
+        metric_for_best_model="eval_loss",
+        greater_is_better=False,
+        # label_names=target_columns,
     )
