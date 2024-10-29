@@ -4,7 +4,7 @@ from tsfm_public.toolkit.time_series_preprocessor import TimeSeriesPreprocessor
 import pandas as pd
 # from src.data import load, preprocess
 import requests  # For streaming data from the local server
-from src.STATIC import API_KEY, ROOT_DIR
+from src.STATIC import API_KEY, ROOT_DIR, TARGET_IP
 
 
 def preprocess_batch(batch_data, timestamp_column, input_columns, id_columns, context_length, tsp=None):
@@ -45,7 +45,7 @@ def preprocess_batch(batch_data, timestamp_column, input_columns, id_columns, co
 
 def fetch_data(dataset_code, location = 'local'):
     if location == 'remote':
-        response = requests.get(f"http://localhost:3116/get_datasets?dataset_code={dataset_code}",
+        response = requests.get(f"http://{TARGET_IP}:3116/get_datasets?dataset_code={dataset_code}",
                                 headers={"x-api-key": API_KEY})
         response.raise_for_status()  # Ensure the request was successful
         response_json = response.json()  # Assuming JSON format; adjust if necessary
