@@ -1,5 +1,5 @@
 import os
-from tsfm_public.toolkit.dataset import PretrainDFDataset
+from tsfm_public.toolkit.dataset import PretrainDFDataset, ClassificationDFDataset
 from tsfm_public.toolkit.time_series_preprocessor import TimeSeriesPreprocessor
 import pandas as pd
 from io import StringIO
@@ -9,30 +9,85 @@ from src.STATIC import API_KEY, ROOT_DIR, TARGET_IP, PORT
 from tqdm import tqdm
 
 
-def preprocess_batch(batch_data, timestamp_column, input_columns, id_columns, context_length, tsp=None):
+def preprocess_pretrain_batch(train_data, val_data, input_columns, id_columns, context_length, tsp=None, timestamp_column='datetime'):
     """
     Preprocess a batch of data and return a PretrainDFDataset object.
     """
     relevant_columns = [timestamp_column] + id_columns + input_columns
-    batch_data = batch_data.loc[:, relevant_columns].copy()
+    train_data = train_data.loc[:, relevant_columns].copy()
+    val_data = val_data.loc[:,relevant_columns].copy()
     
-    if tsp is None:  # Initialize the preprocessor if not done already
-        tsp = TimeSeriesPreprocessor(
-            timestamp_column=timestamp_column,
-            id_columns=id_columns,
-            input_columns=input_columns,
-            target_columns=input_columns,
-            context_length=context_length,
-            scaling=True,
-        )
-        tsp.train(batch_data)  # Only train the scaler once with the first batch
-
-    return tsp, PretrainDFDataset(
-        tsp.preprocess(batch_data),
-        id_columns=id_columns,
+    # if tsp is None:  # Initialize the preprocessor if not done already
+    tsp = TimeSeriesPreprocessor(
         timestamp_column=timestamp_column,
+        id_columns=id_columns,
+        input_columns=input_columns,
+        target_columns=input_columns,
         context_length=context_length,
+        scaling=True,
     )
+    tsp.train(train_data)
+
+    train_dataset = PretrainDFDataset(
+        tsp.preprocess(train_data),
+        id_columns=id_columns,
+        timestamp_column="datetime",
+#         observable_columns=forecast_columns,
+#         target_columns=forecast_columns,
+        context_length=context_length,
+#         prediction_length=forecast_horizon,
+    )
+    valid_dataset = PretrainDFDataset(
+        tsp.preprocess(val_data),
+        id_columns=id_columns,
+        timestamp_column="datetime",
+#         observable_columns=forecast_columns,
+#         target_columns=forecast_columns,
+        context_length=context_length,
+#         prediction_length=forecast_horizon,
+    )
+
+    return tsp, train_dataset, valid_dataset
+
+def preprocess_classifier_batch(train_data, val_data, input_columns, id_columns, context_length, tsp=None, timestamp_column='datetime', target_columns = 'label'):
+    """
+    Preprocess a batch of data and return a PretrainDFDataset object.
+    """
+    relevant_columns = [timestamp_column] + id_columns + input_columns + [target_columns]
+    train_data = train_data.loc[:, relevant_columns].copy()
+    val_data = val_data.loc[:,relevant_columns].copy()
+    
+    # if tsp is None:  # Initialize the preprocessor if not done already
+    tsp = TimeSeriesPreprocessor(
+        timestamp_column=timestamp_column,
+        id_columns=id_columns,
+        input_columns=input_columns,
+        target_columns=[target_columns],
+        context_length=context_length,
+        scaling=True,
+    )
+    tsp.train(train_data)  # Only train the scaler once with the first batch
+    
+    train_dataset = ClassificationDFDataset(
+        tsp.preprocess(train_data),
+        id_columns=id_columns,
+        timestamp_column = timestamp_column,
+        input_columns=input_columns,
+        label_column=target_columns,
+        context_length=context_length,
+    #     prediction_length=forecast_horizon,
+    )
+    valid_dataset = ClassificationDFDataset(
+        tsp.preprocess(val_data),
+        id_columns=id_columns,
+        timestamp_column = timestamp_column,
+        input_columns=input_columns,
+        label_column=target_columns,
+        context_length=context_length,
+    #     prediction_length=forecast_horizon,
+    )
+
+    return tsp,  train_dataset, valid_dataset
 
 
 # def fetch_next_batch(batch_index):
@@ -43,6 +98,37 @@ def preprocess_batch(batch_data, timestamp_column, input_columns, id_columns, co
 #                             headers={"x-api-key": API_KEY})
 #     response.raise_for_status()  # Ensure the request was successful
 #     return response.json()  # Assuming JSON format; adjust if necessary
+
+def fetch_next_batch(dataset_code, batch_index, batch_size=500):
+    train_data = []
+    val_data = []
+    offset = batch_index*batch_size
+
+    response = requests.get(
+        f"http://{TARGET_IP}:{PORT}/get_training_datasets",
+        params={
+            "dataset_code": dataset_code,
+            "batch_size": batch_size,
+            "offset": offset
+        },
+        headers={"x-api-key": API_KEY}
+    )
+    response.raise_for_status()
+    response_json = response.json()
+
+    # Append fetched data to corresponding lists
+    train_data = pd.read_json(StringIO(response_json['train_json']), orient='records').to_dict(orient='records')
+    val_data = pd.read_json(StringIO(response_json['val_json']), orient='records').to_dict(orient='records')
+    # test_data = pd.read_json(StringIO(response_json['test_json']), orient='records').to_dict(orient='records')
+    
+    # Increment offset for next batch
+    offset += batch_size
+
+    # Convert datetime column to datetime type
+    for dataset in [train_data, val_data]:
+        dataset['datetime'] = pd.to_datetime(dataset['datetime'])
+
+    return train_data, val_data
 
 
 def fetch_data(dataset_code, location='local', batch_size=500):
