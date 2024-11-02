@@ -76,9 +76,9 @@ def fetch_data(dataset_code, location='local', batch_size=500):
             response_json = response.json()
 
             # Append fetched data to corresponding lists
-            train_data.extend(pd.read_json(StringIO(response_json['train_json'], orient='records').to_dict(orient='records')))
-            val_data.extend(pd.read_json(StringIO(response_json['val_json'], orient='records').to_dict(orient='records')))
-            test_data.extend(pd.read_json(StringIO(response_json['test_json'], orient='records').to_dict(orient='records')))
+            train_data.extend(pd.read_json(StringIO(response_json['train_json']), orient='records').to_dict(orient='records'))
+            val_data.extend(pd.read_json(StringIO(response_json['val_json']), orient='records').to_dict(orient='records'))
+            test_data.extend(pd.read_json(StringIO(response_json['test_json']), orient='records').to_dict(orient='records'))
 
             # Update progress bar with the current size of each dataset
             pbar.set_postfix({
