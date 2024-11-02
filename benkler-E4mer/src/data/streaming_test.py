@@ -31,7 +31,9 @@ def test():
                 headers={"x-api-key": API_KEY}
             )
     response.raise_for_status()
-    print(pd.read_json(response.json(), orient='records').head())
+    response_json = response.json()
+    print(response_json.keys())
+    print(pd.read_json(response_json.json()['train_json'], orient='records').head())
 
 
 if __name__ == '__main__':
