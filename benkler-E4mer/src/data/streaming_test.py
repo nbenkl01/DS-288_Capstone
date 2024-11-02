@@ -28,7 +28,7 @@ def test_real_data_streaming():
                 f"http://{TARGET_IP}:{PORT}/get_datasets",
                 params={
                     "dataset_code": 'WESAD',
-                    "batch_size": 100,
+                    "batch_size": 1000,
                     'columns': ['datetime','subject_id','acc_l2_mean','hrv_cvsd','eda_tonic_mean','eda_phasic_mean','binary_stress'],
                     "offset": 0
                 },
