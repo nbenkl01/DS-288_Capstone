@@ -100,8 +100,6 @@ def preprocess_classifier_batch(train_data, val_data, input_columns, id_columns,
 #     return response.json()  # Assuming JSON format; adjust if necessary
 
 def fetch_next_batch(dataset_code, batch_index, batch_size=500):
-    train_data = []
-    val_data = []
     offset = batch_index*batch_size
 
     response = requests.get(
