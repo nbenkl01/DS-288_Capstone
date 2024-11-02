@@ -1,6 +1,6 @@
 import requests
 import pandas as pd
-from io import StringIO
+# from io import StringIO
 from src.STATIC import TARGET_IP, PORT, API_KEY
 
 def test():
@@ -31,7 +31,7 @@ def test():
                 headers={"x-api-key": API_KEY}
             )
     response.raise_for_status()
-    print(pd.read_json(StringIO(response.json()), orient='records').head())
+    print(pd.read_json(response.json(), orient='records').head())
 
 
 if __name__ == '__main__':
