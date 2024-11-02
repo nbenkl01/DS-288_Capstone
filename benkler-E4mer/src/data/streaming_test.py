@@ -1,5 +1,4 @@
 import requests
-from src.model.data import fetch_data
 from src.STATIC import TARGET_IP, PORT, API_KEY
 
 def test():
