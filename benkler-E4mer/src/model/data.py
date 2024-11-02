@@ -5,6 +5,7 @@ import pandas as pd
 # from src.data import load, preprocess
 import requests  # For streaming data from the local server
 from src.STATIC import API_KEY, ROOT_DIR, TARGET_IP, PORT
+import tqdm
 
 
 def preprocess_batch(batch_data, timestamp_column, input_columns, id_columns, context_length, tsp=None):
@@ -49,6 +50,9 @@ def fetch_data(dataset_code, location='local', batch_size=1000):
         val_data = []
         test_data = []
         offset = 0
+        
+        # Initialize tqdm progress bar
+        pbar = tqdm(desc="Fetching Data", unit="batch")
 
         while True:
             # Fetch data in batches
@@ -69,6 +73,14 @@ def fetch_data(dataset_code, location='local', batch_size=1000):
             val_data.extend(pd.read_json(response_json['val_json'], orient='records').to_dict(orient='records'))
             test_data.extend(pd.read_json(response_json['test_json'], orient='records').to_dict(orient='records'))
 
+            # Update progress bar with the current size of each dataset
+            pbar.set_postfix({
+                "Train Size": len(train_data),
+                "Val Size": len(val_data),
+                "Test Size": len(test_data)
+            })
+            pbar.update(1)
+
             # Stop fetching if less than batch_size items were returned (indicating end of data)
             if len(response_json['train_json']) < batch_size and len(response_json['val_json']) < batch_size and len(response_json['test_json']) < batch_size:
                 break
@@ -76,10 +88,8 @@ def fetch_data(dataset_code, location='local', batch_size=1000):
             # Increment offset for next batch
             offset += batch_size
 
-        # Convert lists of dictionaries to DataFrames
-        train_data = pd.DataFrame(train_data)
-        val_data = pd.DataFrame(val_data)
-        test_data = pd.DataFrame(test_data)
+        # Close the progress bar
+        pbar.close()
 
     else:
         # Local data loading logic
