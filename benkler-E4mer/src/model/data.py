@@ -117,13 +117,10 @@ def fetch_next_batch(dataset_code, batch_index, batch_size=500):
     response_json = response.json()
 
     # Append fetched data to corresponding lists
-    train_data = pd.read_json(StringIO(response_json['train_json']), orient='records').to_dict(orient='records')
-    val_data = pd.read_json(StringIO(response_json['val_json']), orient='records').to_dict(orient='records')
+    train_data = pd.read_json(StringIO(response_json['train_json']), orient='records')
+    val_data = pd.read_json(StringIO(response_json['val_json']), orient='records')
     # test_data = pd.read_json(StringIO(response_json['test_json']), orient='records').to_dict(orient='records')
     
-    # Increment offset for next batch
-    offset += batch_size
-
     # Convert datetime column to datetime type
     for dataset in [train_data, val_data]:
         dataset['datetime'] = pd.to_datetime(dataset['datetime'])
