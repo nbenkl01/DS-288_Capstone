@@ -45,7 +45,7 @@ def preprocess_batch(batch_data, timestamp_column, input_columns, id_columns, co
 #     return response.json()  # Assuming JSON format; adjust if necessary
 
 
-def fetch_data(dataset_code, location='local', batch_size=1000):
+def fetch_data(dataset_code, location='local', batch_size=500):
     if location == 'remote':
         train_data = []
         val_data = []
