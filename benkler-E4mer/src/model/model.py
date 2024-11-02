@@ -160,12 +160,7 @@ def batch_train_classifier(model, dataset_code, training_args, early_stopping_ca
         print(f"Metrics returned by compute_metrics: {metrics}")
         return metrics
     
-    trainer = Trainer(
-        model=model,
-        args=training_args,
-        compute_metrics=compute_metrics,
-        callbacks=[early_stopping_callback],
-    )
+    trainer = None
     
     # Batch training loop
     batch_index = 0
@@ -176,9 +171,19 @@ def batch_train_classifier(model, dataset_code, training_args, early_stopping_ca
             val_data = clean_data(val_data, input_columns=input_columns, label_column=target_columns)
             # tsp, train_dataset, val_dataset = preprocess_classifier_batch(train_data, val_data, input_columns, id_columns, context_length, tsp=None if batch_index == 0 else tsp)
             _, train_dataset, val_dataset = preprocess_classifier_batch(train_data, val_data, input_columns, id_columns, context_length)
-            trainer.train_dataset = train_dataset
-            trainer.eval_dataset = val_dataset
-            trainer.train()
+            if trainer:
+                trainer.train_dataset = train_dataset
+                trainer.eval_dataset = val_dataset
+                trainer.train()
+            else:
+                trainer = Trainer(
+                    model=model,
+                    args=training_args,
+                    train_dataset = train_dataset,
+                    eval_dataset = val_dataset,
+                    compute_metrics=compute_metrics,
+                    callbacks=[early_stopping_callback],
+                )
             batch_index += 1
         except requests.HTTPError:
             print("No more batches to fetch.")
