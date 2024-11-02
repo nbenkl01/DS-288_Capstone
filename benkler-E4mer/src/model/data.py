@@ -53,6 +53,12 @@ def fetch_data(dataset_code, location='local', batch_size=1000):
         
         # Initialize tqdm progress bar
         pbar = tqdm(desc="Fetching Data", unit="batch")
+        test_response = requests.get(
+                f"http://{TARGET_IP}:{PORT}/test_connection",
+                headers={"x-api-key": API_KEY}
+            )
+        test_response.raise_for_status()
+        print(test_response.json()['message'])
 
         while True:
             # Fetch data in batches
