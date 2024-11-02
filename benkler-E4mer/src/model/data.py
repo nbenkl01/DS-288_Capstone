@@ -5,7 +5,7 @@ import pandas as pd
 # from src.data import load, preprocess
 import requests  # For streaming data from the local server
 from src.STATIC import API_KEY, ROOT_DIR, TARGET_IP, PORT
-import tqdm
+from tqdm import tqdm
 
 
 def preprocess_batch(batch_data, timestamp_column, input_columns, id_columns, context_length, tsp=None):
