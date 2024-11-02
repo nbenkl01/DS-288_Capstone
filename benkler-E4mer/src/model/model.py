@@ -186,6 +186,7 @@ def batch_train_classifier(model, dataset_code, training_args, early_stopping_ca
                     compute_metrics=compute_metrics,
                     callbacks=[early_stopping_callback],
                 )
+                trainer.train()
             batch_index += 1
         except requests.HTTPError:
             print("No more batches to fetch.")
