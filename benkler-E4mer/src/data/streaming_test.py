@@ -29,6 +29,7 @@ def test_real_data_streaming():
                 params={
                     "dataset_code": 'WESAD',
                     "batch_size": 100,
+                    'columns': ['datetime','subject_id','acc_l2_mean','hrv_cvsd','eda_tonic_mean','eda_phasic_mean','binary_stress'],
                     "offset": 0
                 },
                 headers={"x-api-key": API_KEY}
@@ -43,7 +44,8 @@ def test_full_data_streaming():
     response = requests.get(
                 f"http://{TARGET_IP}:{PORT}/get_full_datasets",
                 params={
-                    "dataset_code": 'WESAD'
+                    "dataset_code": 'WESAD',
+                    'columns': ['datetime','subject_id','acc_l2_mean','hrv_cvsd','eda_tonic_mean','eda_phasic_mean','binary_stress'],
                 },
                 headers={"x-api-key": API_KEY}
             )

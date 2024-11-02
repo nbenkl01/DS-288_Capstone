@@ -99,7 +99,9 @@ def preprocess_classifier_batch(train_data, val_data, input_columns, id_columns,
 #     response.raise_for_status()  # Ensure the request was successful
 #     return response.json()  # Assuming JSON format; adjust if necessary
 
-def fetch_next_batch(dataset_code, batch_index, batch_size=500):
+def fetch_next_batch(dataset_code, batch_index, 
+                     columns = ['datetime','subject_id','acc_l2_mean','hrv_cvsd','eda_tonic_mean','eda_phasic_mean','binary_stress'],
+                     batch_size=500):
     offset = batch_index*batch_size
 
     response = requests.get(
@@ -107,6 +109,7 @@ def fetch_next_batch(dataset_code, batch_index, batch_size=500):
         params={
             "dataset_code": dataset_code,
             "batch_size": batch_size,
+            "columns": columns,
             "offset": offset
         },
         headers={"x-api-key": API_KEY}
@@ -126,7 +129,9 @@ def fetch_next_batch(dataset_code, batch_index, batch_size=500):
     return train_data, val_data
 
 
-def fetch_data(dataset_code, location='local', batch_size=500):
+def fetch_data(dataset_code, location='local', 
+               columns = ['datetime','subject_id','acc_l2_mean','hrv_cvsd','eda_tonic_mean','eda_phasic_mean','binary_stress'],
+               batch_size=500):
     if location == 'remote':
         train_data = []
         val_data = []
@@ -149,6 +154,7 @@ def fetch_data(dataset_code, location='local', batch_size=500):
                 params={
                     "dataset_code": dataset_code,
                     "batch_size": batch_size,
+                    "columns": columns,
                     "offset": offset
                 },
                 headers={"x-api-key": API_KEY}
