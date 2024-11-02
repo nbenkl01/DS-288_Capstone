@@ -35,18 +35,18 @@ def test():
     print(response_json.keys())
     print(pd.read_json(StringIO(response_json['train_json']), orient='records').head())
 
-    print('Testing Full Data Streaming')
-    response = requests.get(
-                f"http://{TARGET_IP}:{PORT}/get_full_datasets",
-                params={
-                    "dataset_code": 'WESAD'
-                },
-                headers={"x-api-key": API_KEY}
-            )
-    response.raise_for_status()
-    response_json = response.json()
-    print(response_json.keys())
-    print(pd.read_json(StringIO(response_json['train_json']), orient='records').head())
+    # print('Testing Full Data Streaming')
+    # response = requests.get(
+    #             f"http://{TARGET_IP}:{PORT}/get_full_datasets",
+    #             params={
+    #                 "dataset_code": 'WESAD'
+    #             },
+    #             headers={"x-api-key": API_KEY}
+    #         )
+    # response.raise_for_status()
+    # response_json = response.json()
+    # print(response_json.keys())
+    # print(pd.read_json(StringIO(response_json['train_json']), orient='records').head())
 
 if __name__ == '__main__':
     test()
