@@ -52,7 +52,7 @@ def preprocess_pretrain_batch(train_data, val_data, input_columns, id_columns, c
 def preprocess_classifier_batch(train_data, val_data, input_columns, 
                                 id_columns = ['subject_id','condition'],
                                 context_length = 512, 
-                                stride = 128,
+                                stride = 16,
                                 tsp=None, timestamp_column='datetime', target_columns = 'label'):
     """
     Preprocess a batch of data and return a PretrainDFDataset object.
