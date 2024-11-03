@@ -168,11 +168,11 @@ def batch_train_classifier(model, dataset_code, training_args, early_stopping_ca
         try:
             train_data, val_data = fetch_next_batch(dataset_code, batch_index,
                                                      columns = ['datetime','subject_id','acc_l2_mean','hrv_cvsd','eda_tonic_mean','eda_phasic_mean','binary_stress'],
-                                                      batch_size=500)
+                                                      batch_size=5000)
             train_data = clean_data(train_data, input_columns=input_columns, label_column=target_columns)
             val_data = clean_data(val_data, input_columns=input_columns, label_column=target_columns)
-            # tsp, train_dataset, val_dataset = preprocess_classifier_batch(train_data, val_data, input_columns, id_columns, context_length, tsp=None if batch_index == 0 else tsp)
-            _, train_dataset, val_dataset = preprocess_classifier_batch(train_data, val_data, input_columns, id_columns, context_length)
+            tsp, train_dataset, val_dataset = preprocess_classifier_batch(train_data, val_data, input_columns, id_columns, context_length, tsp=None if batch_index == 0 else tsp)
+            # _, train_dataset, val_dataset = preprocess_classifier_batch(train_data, val_data, input_columns, id_columns, context_length)
             if trainer:
                 trainer.train_dataset = train_dataset
                 trainer.eval_dataset = val_dataset

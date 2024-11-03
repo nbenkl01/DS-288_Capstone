@@ -17,15 +17,15 @@ def preprocess_pretrain_batch(train_data, val_data, input_columns, id_columns, c
     train_data = train_data.loc[:, relevant_columns].copy()
     val_data = val_data.loc[:,relevant_columns].copy()
     
-    # if tsp is None:  # Initialize the preprocessor if not done already
-    tsp = TimeSeriesPreprocessor(
-        timestamp_column=timestamp_column,
-        id_columns=id_columns,
-        input_columns=input_columns,
-        target_columns=input_columns,
-        context_length=context_length,
-        scaling=True,
-    )
+    if tsp is None:  # Initialize the preprocessor if not done already
+        tsp = TimeSeriesPreprocessor(
+            timestamp_column=timestamp_column,
+            id_columns=id_columns,
+            input_columns=input_columns,
+            target_columns=input_columns,
+            context_length=context_length,
+            scaling=True,
+        )
     tsp.train(train_data)
 
     train_dataset = PretrainDFDataset(
@@ -57,15 +57,15 @@ def preprocess_classifier_batch(train_data, val_data, input_columns, id_columns,
     train_data = train_data.loc[:, relevant_columns].copy()
     val_data = val_data.loc[:,relevant_columns].copy()
     
-    # if tsp is None:  # Initialize the preprocessor if not done already
-    tsp = TimeSeriesPreprocessor(
-        timestamp_column=timestamp_column,
-        id_columns=id_columns,
-        input_columns=input_columns,
-        target_columns=[target_columns],
-        context_length=context_length,
-        scaling=True,
-    )
+    if tsp is None:  # Initialize the preprocessor if not done already
+        tsp = TimeSeriesPreprocessor(
+            timestamp_column=timestamp_column,
+            id_columns=id_columns,
+            input_columns=input_columns,
+            target_columns=[target_columns],
+            context_length=context_length,
+            scaling=True,
+        )
     tsp.train(train_data)  # Only train the scaler once with the first batch
     
     train_dataset = ClassificationDFDataset(
