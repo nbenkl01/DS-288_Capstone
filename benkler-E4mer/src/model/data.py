@@ -129,26 +129,17 @@ def fetch_next_batch(dataset_code, batch_index,
     return train_data, val_data
 
 
-def fetch_data(dataset_code, location='local', 
-               columns = ['datetime','subject_id','acc_l2_mean','hrv_cvsd','eda_tonic_mean','eda_phasic_mean','binary_stress'],
-               batch_size=500):
+def fetch_data(dataset_code, location='local', columns=['datetime', 'subject_id', 'acc_l2_mean', 'hrv_cvsd', 'eda_tonic_mean', 'eda_phasic_mean', 'binary_stress'], batch_size=500):
     if location == 'remote':
-        train_data = []
-        val_data = []
-        test_data = []
+        train_data, val_data, test_data = pd.DataFrame([]), pd.DataFrame([]), pd.DataFrame([])
         offset = 0
         
-        test_response = requests.get(
-                f"http://{TARGET_IP}:{PORT}/test_connection",
-                headers={"x-api-key": API_KEY}
-            )
+        test_response = requests.get(f"http://{TARGET_IP}:{PORT}/test_connection", headers={"x-api-key": API_KEY})
         test_response.raise_for_status()
         print(test_response.json()['message'])
 
-        # Initialize tqdm progress bar
         pbar = tqdm(desc="Fetching Data", unit="batch")
         while True:
-            # Fetch data in batches
             response = requests.get(
                 f"http://{TARGET_IP}:{PORT}/get_datasets",
                 params={
@@ -162,42 +153,26 @@ def fetch_data(dataset_code, location='local',
             response.raise_for_status()
             response_json = response.json()
 
-            # Append fetched data to corresponding lists
-            train_data.extend(pd.read_json(StringIO(response_json['train_json']), orient='records').to_dict(orient='records'))
-            val_data.extend(pd.read_json(StringIO(response_json['val_json']), orient='records').to_dict(orient='records'))
-            test_data.extend(pd.read_json(StringIO(response_json['test_json']), orient='records').to_dict(orient='records'))
+            train_data = pd.concat([train_data,pd.read_json(StringIO(response_json['train_json']), orient='records')])
+            val_data = pd.concat([val_data,pd.read_json(StringIO(response_json['val_json']), orient='records')])
+            test_data = pd.concat([test_data,pd.read_json(StringIO(response_json['test_json']), orient='records')])
 
-            # Update progress bar with the current size of each dataset
-            pbar.set_postfix({
-                "Train Size": len(train_data),
-                "Val Size": len(val_data),
-                "Test Size": len(test_data)
-            })
+            pbar.set_postfix({"Train Size": len(train_data), "Val Size": len(val_data), "Test Size": len(test_data)})
             pbar.update(1)
 
-            # Stop fetching if less than batch_size items were returned (indicating end of data)
             if len(response_json['train_json']) < batch_size and len(response_json['val_json']) < batch_size and len(response_json['test_json']) < batch_size:
                 break
 
-            # Increment offset for next batch
             offset += batch_size
 
-        # Close the progress bar
         pbar.close()
 
     else:
-        # Local data loading logic
         data_dir = os.path.join(ROOT_DIR, f'./e4data/train_test_split/{dataset_code}')
-        train_file = os.path.join(data_dir, 'train_data.csv')
-        val_file = os.path.join(data_dir, 'val_data.csv')
-        test_file = os.path.join(data_dir, 'test_data.csv')
+        train_data = pd.read_csv(os.path.join(data_dir, 'train_data.csv'))
+        val_data = pd.read_csv(os.path.join(data_dir, 'val_data.csv'))
+        test_data = pd.read_csv(os.path.join(data_dir, 'test_data.csv'))
 
-        # Read the CSV files
-        train_data = pd.read_csv(train_file)
-        val_data = pd.read_csv(val_file)
-        test_data = pd.read_csv(test_file)
-
-    # Convert datetime column to datetime type
     for dataset in [train_data, val_data, test_data]:
         dataset['datetime'] = pd.to_datetime(dataset['datetime'])
 
