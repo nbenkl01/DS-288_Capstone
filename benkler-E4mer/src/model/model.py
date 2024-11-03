@@ -169,7 +169,7 @@ def batch_train_classifier(model, dataset_code, training_args, early_stopping_ca
             train_data, val_data = fetch_next_batch(dataset_code, batch_index,
                                                      columns = ['datetime','subject_id','acc_l2_mean','hrv_cvsd','eda_tonic_mean','eda_phasic_mean', 'condition', 'binary_stress'],
                                                       batch_size=batch_size)
-            if train_data == None and val_data == None:
+            if type(train_data) == type(None) and type(val_data) == type(None):
                 print("No more batches to fetch.")
                 break
 
