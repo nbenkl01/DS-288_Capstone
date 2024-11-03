@@ -235,7 +235,7 @@ def pretrain(dataset_code,
 
 
 def train_classifier(dataset_code,
-                     input_columns, target_columns, id_columns = [],
+                     input_columns, target_columns, id_columns = ['subject_id','condition'],
                      finetune = True,
                         pretrained_model_dir = os.path.join(ROOT_DIR, "models/unlabelled_pretrain"),
                          checkpoint_dir=os.path.join(ROOT_DIR, "checkpoint/stress_event_finetune"),
