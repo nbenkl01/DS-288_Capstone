@@ -124,14 +124,13 @@ def fetch_next_batch(dataset_code, batch_index,
     )
     response.raise_for_status()
     response_json = response.json()
-    
-    if len(response_json['train_json'])<=0 and len(response_json['val_json'])<=0: 
-        return None, None
 
     # Append fetched data to corresponding lists
     train_data = pd.read_json(StringIO(response_json['train_json']), orient='records')
     val_data = pd.read_json(StringIO(response_json['val_json']), orient='records')
     # test_data = pd.read_json(StringIO(response_json['test_json']), orient='records').to_dict(orient='records')
+    if len(train_data)<=0 and len(val_data)<=0: 
+        return None, None
     
     # Convert datetime column to datetime type
     for dataset in [train_data, val_data]:
