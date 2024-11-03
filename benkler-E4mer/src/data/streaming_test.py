@@ -2,6 +2,7 @@ import argparse
 import requests
 import pandas as pd
 from io import StringIO
+from src.model.data import fetch_data
 from src.STATIC import TARGET_IP, PORT, API_KEY
 
 def test_connection():
@@ -41,18 +42,20 @@ def test_real_data_streaming():
 
 def test_full_data_streaming():
     print('Testing Full Data Streaming')
-    response = requests.get(
-                f"http://{TARGET_IP}:{PORT}/get_full_datasets",
-                params={
-                    "dataset_code": 'WESAD',
-                    'columns': ['datetime','subject_id','acc_l2_mean','hrv_cvsd','eda_tonic_mean','eda_phasic_mean','binary_stress'],
-                },
-                headers={"x-api-key": API_KEY}
-            )
-    response.raise_for_status()
-    response_json = response.json()
-    print(response_json.keys())
-    print(pd.read_json(StringIO(response_json['train_json']), orient='records').head())
+    train_data, val_data, test_data = fetch_data('WESAD', location='remote', columns=['datetime', 'subject_id', 'acc_l2_mean', 'hrv_cvsd', 'eda_tonic_mean', 'eda_phasic_mean', 'binary_stress'], batch_size=500)
+    # response = requests.get(
+    #             f"http://{TARGET_IP}:{PORT}/get_full_datasets",
+    #             params={
+    #                 "dataset_code": 'WESAD',
+    #                 'columns': ['datetime','subject_id','acc_l2_mean','hrv_cvsd','eda_tonic_mean','eda_phasic_mean','binary_stress'],
+    #             },
+    #             headers={"x-api-key": API_KEY}
+    #         )
+    # response.raise_for_status()
+    # response_json = response.json()
+    # print(response_json.keys())
+    # print(pd.read_json(StringIO(response_json['train_json']), orient='records').head())
+    print(train_data.head())
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Run specific tests.")
