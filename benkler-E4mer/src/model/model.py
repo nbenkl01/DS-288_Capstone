@@ -137,7 +137,7 @@ def batch_train_classifier(model, dataset_code, training_args, early_stopping_ca
 
         predictions = np.argmax(logits, axis=-1)
         labels = labels
-        # print(f"predictions: {predictions}, labels: {labels}")
+        print(f"predictions: {predictions}, labels: {labels}")
         
         # Calculate accuracy, precision, recall, F1
         acc = accuracy_score(labels, predictions)
