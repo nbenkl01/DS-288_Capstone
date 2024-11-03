@@ -123,6 +123,9 @@ def fetch_next_batch(dataset_code, batch_index,
     )
     response.raise_for_status()
     response_json = response.json()
+    
+    if len(response_json['train_json'])<=0 and len(response_json['val_json'])<=0: 
+        return None, None
 
     # Append fetched data to corresponding lists
     train_data = pd.read_json(StringIO(response_json['train_json']), orient='records')

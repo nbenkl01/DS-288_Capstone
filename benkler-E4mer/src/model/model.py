@@ -130,7 +130,7 @@ def batch_train_classifier(model, dataset_code, training_args, early_stopping_ca
             labels = output[1]
         else:
             logits, labels = output
-        # print(f"logits: {logits}, labels: {labels}")
+        print(f"logits: {logits}, labels: {labels}")
         
         if len(logits.shape) > 2:
             logits = logits.squeeze()  # Flatten if necessary
@@ -169,6 +169,10 @@ def batch_train_classifier(model, dataset_code, training_args, early_stopping_ca
             train_data, val_data = fetch_next_batch(dataset_code, batch_index,
                                                      columns = ['datetime','subject_id','acc_l2_mean','hrv_cvsd','eda_tonic_mean','eda_phasic_mean', 'condition', 'binary_stress'],
                                                       batch_size=batch_size)
+            if train_data == None and val_data == None:
+                print("No more batches to fetch.")
+                break
+
             train_data = clean_data(train_data, input_columns=input_columns, label_column=target_columns)
             val_data = clean_data(val_data, input_columns=input_columns, label_column=target_columns)
             tsp, train_dataset, val_dataset = preprocess_classifier_batch(train_data, val_data, input_columns, id_columns, context_length, tsp=None if batch_index == 0 else tsp)
