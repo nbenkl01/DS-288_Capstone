@@ -65,7 +65,7 @@ def classifier_trainer(model, train_dataset, val_dataset, training_args, early_s
     """Initializes and trains the model using the Trainer API."""
 
     def compute_metrics(eval_pred):
-        print("Computing Metrics")
+        # print("Computing Metrics")
         output, _ = eval_pred
 
         # Check if logits need reshaping
@@ -74,25 +74,25 @@ def classifier_trainer(model, train_dataset, val_dataset, training_args, early_s
             labels = output[1]
         else:
             logits, labels = output
-        print(f"logits: {logits}, labels: {labels}")
+        # print(f"logits: {logits}, labels: {labels}")
         
         if len(logits.shape) > 2:
             logits = logits.squeeze()  # Flatten if necessary
 
         predictions = np.argmax(logits, axis=-1)
         labels = labels
-        print(f"predictions: {predictions}, labels: {labels}")
+        # print(f"predictions: {predictions}, labels: {labels}")
         
         # Calculate accuracy, precision, recall, F1
         acc = accuracy_score(labels, predictions)
-        print(f"acc: {labels}")
+        # print(f"acc: {labels}")
         precision, recall, f1, _ = precision_recall_fscore_support(labels, predictions, average='weighted')
-        print(f"f1: {f1}")
+        # print(f"f1: {f1}")
         
         # Compute loss directly using model’s criterion (cross-entropy loss here as an example)
         loss_fn = torch.nn.CrossEntropyLoss()
         loss = loss_fn(torch.tensor(logits), torch.tensor(labels)).item()
-        print(f"loss: {loss}")
+        # print(f"loss: {loss}")
         
         metrics = {
                     "eval_accuracy": acc,
@@ -101,7 +101,7 @@ def classifier_trainer(model, train_dataset, val_dataset, training_args, early_s
                     "eval_f1": f1,
                     "eval_loss": loss,
                 }
-        print(f"Metrics returned by compute_metrics: {metrics}")
+        # print(f"Metrics returned by compute_metrics: {metrics}")
         return metrics
     
     trainer = Trainer(
@@ -121,7 +121,7 @@ def batch_train_classifier(model, dataset_code, training_args, early_stopping_ca
     Train the model batch-by-batch to avoid loading all data into memory or disk space at once.
     """
     def compute_metrics(eval_pred):
-        print("Computing Metrics")
+        # print("Computing Metrics")
         output, _ = eval_pred
 
         # Check if logits need reshaping
@@ -130,25 +130,25 @@ def batch_train_classifier(model, dataset_code, training_args, early_stopping_ca
             labels = output[1]
         else:
             logits, labels = output
-        print(f"logits: {logits}, labels: {labels}")
+        # print(f"logits: {logits}, labels: {labels}")
         
         if len(logits.shape) > 2:
             logits = logits.squeeze()  # Flatten if necessary
 
         predictions = np.argmax(logits, axis=-1)
         labels = labels
-        print(f"predictions: {predictions}, labels: {labels}")
+        # print(f"predictions: {predictions}, labels: {labels}")
         
         # Calculate accuracy, precision, recall, F1
         acc = accuracy_score(labels, predictions)
-        print(f"acc: {labels}")
+        # print(f"acc: {labels}")
         precision, recall, f1, _ = precision_recall_fscore_support(labels, predictions, average='weighted')
-        print(f"f1: {f1}")
+        # print(f"f1: {f1}")
         
         # Compute loss directly using model’s criterion (cross-entropy loss here as an example)
         loss_fn = torch.nn.CrossEntropyLoss()
         loss = loss_fn(torch.tensor(logits), torch.tensor(labels)).item()
-        print(f"loss: {loss}")
+        # print(f"loss: {loss}")
         
         metrics = {
                     "eval_accuracy": acc,
@@ -157,7 +157,7 @@ def batch_train_classifier(model, dataset_code, training_args, early_stopping_ca
                     "eval_f1": f1,
                     "eval_loss": loss,
                 }
-        print(f"Metrics returned by compute_metrics: {metrics}")
+        # print(f"Metrics returned by compute_metrics: {metrics}")
         return metrics
     
     trainer = None
