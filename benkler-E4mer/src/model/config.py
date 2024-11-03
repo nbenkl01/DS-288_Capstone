@@ -101,9 +101,9 @@ def classify_training_args(checkpoint_dir, train_epochs, batch_size, num_workers
         save_total_limit=3,
         logging_dir=os.path.join(checkpoint_dir, "logs"),
         load_best_model_at_end=True,
-        # metric_for_best_model="eval_f1",
-        # greater_is_better=True,
-        metric_for_best_model="eval_loss",
-        greater_is_better=False,
+        metric_for_best_model="eval_f1",
+        greater_is_better=True,
+        # metric_for_best_model="eval_loss",
+        # greater_is_better=False,
         # label_names=target_columns,
     )
