@@ -167,7 +167,7 @@ def batch_train_classifier(model, dataset_code, training_args, early_stopping_ca
     while True:
         try:
             train_data, val_data = fetch_next_batch(dataset_code, batch_index,
-                                                     columns = ['datetime','subject_id','acc_l2_mean','hrv_cvsd','eda_tonic_mean','eda_phasic_mean','binary_stress'],
+                                                     columns = ['datetime','subject_id','acc_l2_mean','hrv_cvsd','eda_tonic_mean','eda_phasic_mean', 'condition', 'binary_stress'],
                                                       batch_size=batch_size)
             train_data = clean_data(train_data, input_columns=input_columns, label_column=target_columns)
             val_data = clean_data(val_data, input_columns=input_columns, label_column=target_columns)
