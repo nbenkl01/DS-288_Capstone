@@ -130,14 +130,14 @@ def batch_train_classifier(model, dataset_code, training_args, early_stopping_ca
             labels = output[1]
         else:
             logits, labels = output
-        print(f"logits: {logits}, labels: {labels}")
+        # print(f"logits: {logits}, labels: {labels}")
         
         if len(logits.shape) > 2:
             logits = logits.squeeze()  # Flatten if necessary
 
         predictions = np.argmax(logits, axis=-1)
         labels = labels
-        print(f"predictions: {predictions}, labels: {labels}")
+        # print(f"predictions: {predictions}, labels: {labels}")
         
         # Calculate accuracy, precision, recall, F1
         acc = accuracy_score(labels, predictions)
