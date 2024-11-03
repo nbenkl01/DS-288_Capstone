@@ -116,7 +116,7 @@ def classifier_trainer(model, train_dataset, val_dataset, training_args, early_s
     return trainer
 
 
-def batch_train_classifier(model, dataset_code, training_args, early_stopping_callback, input_columns, target_columns, id_columns, context_length, batch_size = 1000):
+def batch_train_classifier(model, dataset_code, training_args, early_stopping_callback, input_columns, target_columns, id_columns, context_length, batch_size = 5000):
     """
     Train the model batch-by-batch to avoid loading all data into memory or disk space at once.
     """
@@ -168,7 +168,7 @@ def batch_train_classifier(model, dataset_code, training_args, early_stopping_ca
         try:
             train_data, val_data = fetch_next_batch(dataset_code, batch_index,
                                                      columns = ['datetime','subject_id','acc_l2_mean','hrv_cvsd','eda_tonic_mean','eda_phasic_mean','binary_stress'],
-                                                      batch_size=5000)
+                                                      batch_size=batch_size)
             train_data = clean_data(train_data, input_columns=input_columns, label_column=target_columns)
             val_data = clean_data(val_data, input_columns=input_columns, label_column=target_columns)
             tsp, train_dataset, val_dataset = preprocess_classifier_batch(train_data, val_data, input_columns, id_columns, context_length, tsp=None if batch_index == 0 else tsp)
@@ -245,7 +245,7 @@ def train_classifier(dataset_code,
                          train_epochs=100, 
                          context_length=512, #prediction_length=96,
                          patch_length=8, num_workers=16, batch_size=16,
-                         data_batch_size=500):
+                         data_batch_size=5000):
     # Data Preprocessing
     data_loc = 'local' if os.path.exists(os.path.join(ROOT_DIR, f'./e4data/train_test_split/{dataset_code}')) else 'remote'
     if data_loc == 'local':
