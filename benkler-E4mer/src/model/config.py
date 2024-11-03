@@ -5,6 +5,38 @@ from transformers import (
     TrainingArguments,
 )
 
+def configure_model(config):
+    """
+    Configures the PatchTSMixer model with specified parameters.
+    Args:
+        input_columns (list): List of input column names.
+        context_length (int): Length of context window.
+        patch_length (int): Length of each patch.
+        prediction_length (int, optional): Length of prediction window (used in pretraining).
+        classifier (bool): If True, configures as classifier; else for masked prediction.
+    Returns:
+        PatchTSMixerConfig: Configuration for the PatchTSMixer model.
+    """
+    config_params = {
+        "context_length": config.context_length,
+        "patch_length": config.patch_length,
+        "num_input_channels": len(config.input_columns),
+        "patch_stride": config.patch_length,
+        "d_model": 2 * config.patch_length,
+        "num_layers": 8,
+        "expansion_factor": 2,
+        "dropout": 0.2,
+        "head_dropout": 0.2,
+        "mode": "mix_channel",
+        "scaling": "std",
+    }
+    if config.task == 'classifier':
+        config_params.update({"num_targets": 2})
+    else:
+        config_params.update({"prediction_length": config.prediction_length})
+
+    return PatchTSMixerConfig(**config_params)
+
 def configure_masked_transformer(config):
     """
     Configures the PatchTSMixer model with specified parameters.
