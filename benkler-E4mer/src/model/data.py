@@ -97,6 +97,48 @@ def preprocess_classifier_batch(train_data, val_data, input_columns,
 
     return tsp,  train_dataset, valid_dataset
 
+def preprocess_singular_classifier_dataset(data,
+                                           input_columns,
+                                            id_columns = ['subject_id','condition'],
+                                            context_length = 512, 
+                                            stride = 16,
+                                            tsp=None,
+                                            fit = False,
+                                            timestamp_column='datetime',
+                                            target_columns = 'label'):
+    """
+    Preprocess a batch of data and return a PretrainDFDataset object.
+    """
+    relevant_columns = [timestamp_column] + id_columns + input_columns + [target_columns]
+    data = data.loc[:, relevant_columns].copy()
+    
+    if tsp is None:  # Initialize the preprocessor if not done already
+        tsp = TimeSeriesPreprocessor(
+            timestamp_column=timestamp_column,
+            # id_columns=[id_columns[1]],
+            id_columns=id_columns,
+            # id_columns=[],
+            input_columns=input_columns,
+            target_columns=[target_columns],
+            context_length=context_length,
+            scaling=False,
+        )
+    if fit:
+        tsp.train(data)  # Only train the scaler once with the first batch
+    
+    dataset = ClassificationDFDataset(
+        tsp.preprocess(data),
+        id_columns=id_columns,
+        timestamp_column = timestamp_column,
+        input_columns=input_columns,
+        label_column=target_columns,
+        context_length=context_length,
+        stride = stride,
+    #     prediction_length=forecast_horizon,
+    )
+
+    return tsp, dataset
+
 
 # def fetch_next_batch(batch_index):
 #     """
@@ -137,6 +179,36 @@ def fetch_next_batch(dataset_code, batch_index,
         dataset['datetime'] = pd.to_datetime(dataset['datetime'])
 
     return train_data, val_data
+
+def fetch_test_dataset(dataset_code, #batch_index, 
+                     columns = ['datetime','subject_id','acc_l2_mean','hrv_cvsd','eda_tonic_mean','eda_phasic_mean', 'condition', 'binary_stress'],
+                     #batch_size=500
+                     ):
+    # offset = batch_index*batch_size
+
+    response = requests.get(
+        f"http://{TARGET_IP}:{PORT}/get_test_data",
+        params={
+            "dataset_code": dataset_code,
+            # "batch_size": batch_size,
+            "columns": columns,
+            # "offset": offset
+        },
+        headers={"x-api-key": API_KEY}
+    )
+    response.raise_for_status()
+    response_json = response.json()
+
+    # Append fetched data to corresponding lists
+    test_data = pd.read_json(StringIO(response_json['test_json']), orient='records')
+
+    # if len(test_data)<=0: 
+    #     return None, None
+    
+    # Convert datetime column to datetime type
+    test_data['datetime'] = pd.to_datetime(test_data['datetime'])
+
+    return test_data
 
 
 def fetch_data(dataset_code, location='local', columns=['datetime', 'subject_id', 'acc_l2_mean', 'hrv_cvsd', 'eda_tonic_mean', 'eda_phasic_mean', 'condition', 'binary_stress'], batch_size=500):

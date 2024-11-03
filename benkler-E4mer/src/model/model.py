@@ -8,7 +8,7 @@ from transformers import (
 )
 import requests
 from sklearn.metrics import accuracy_score, precision_recall_fscore_support
-from src.model.data import fetch_data, clean_data, fetch_next_batch, preprocess_classifier_batch, preprocess_pretrain_batch
+from src.model.data import fetch_data, clean_data, fetch_next_batch, preprocess_classifier_batch, preprocess_pretrain_batch, fetch_test_dataset, preprocess_singular_classifier_dataset
 from src.data import preprocess
 from src.model.config import configure_masked_transformer, configure_classifier, pretrain_training_args, classify_training_args
 from src.model.utils import setup_early_stopping, evaluate_and_save_model
@@ -196,7 +196,7 @@ def batch_train_classifier(model, dataset_code, training_args, early_stopping_ca
             print("No more batches to fetch.")
             break  # Exit loop if no more data is available
 
-    return trainer
+    return trainer, tsp
 
 
 # Main function to initiate pretraining
@@ -282,7 +282,10 @@ def train_classifier(dataset_code,
 
     if data_loc == 'remote' and batch_train:
         # Train model in batches to handle memory and storage constraints
-        trainer = batch_train_classifier(model, dataset_code, training_args, early_stopping_callback, input_columns, target_columns, id_columns, context_length, batch_size=data_batch_size)
+        trainer, tsp = batch_train_classifier(model, dataset_code, training_args, early_stopping_callback, input_columns, target_columns, id_columns, context_length, batch_size=data_batch_size)
+        test_data = fetch_test_dataset(dataset_code, columns = ['datetime','subject_id','acc_l2_mean','hrv_cvsd','eda_tonic_mean','eda_phasic_mean', 'condition', 'binary_stress'])
+        test_data = clean_data(test_data, input_columns=input_columns, label_column=target_columns)
+        _, test_dataset = preprocess_singular_classifier_dataset(test_data, input_columns, id_columns, context_length, tsp = tsp, fit = False)
 
     else:
         trainer = classifier_trainer(model, train_dataset, val_dataset, training_args, early_stopping_callback)
