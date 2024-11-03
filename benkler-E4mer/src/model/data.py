@@ -64,8 +64,8 @@ def preprocess_classifier_batch(train_data, val_data, input_columns,
     if tsp is None:  # Initialize the preprocessor if not done already
         tsp = TimeSeriesPreprocessor(
             timestamp_column=timestamp_column,
-            id_columns=[id_columns[1]],
-            # id_columns=[],
+            # id_columns=[id_columns[1]],
+            id_columns=[],
             input_columns=input_columns,
             target_columns=[target_columns],
             context_length=context_length,
