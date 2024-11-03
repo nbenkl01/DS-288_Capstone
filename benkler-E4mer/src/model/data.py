@@ -69,7 +69,7 @@ def preprocess_classifier_batch(train_data, val_data, input_columns,
             input_columns=input_columns,
             target_columns=[target_columns],
             context_length=context_length,
-            scaling=True,
+            scaling=False,
         )
     tsp.train(train_data)  # Only train the scaler once with the first batch
     
