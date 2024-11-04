@@ -2,6 +2,7 @@ import os
 from transformers import EarlyStoppingCallback
 from sklearn.metrics import accuracy_score, precision_recall_fscore_support
 import torch
+import numpy as np
 
 def setup_early_stopping():
     """Creates an early stopping callback to stop training when improvement stalls."""
@@ -19,18 +20,25 @@ def evaluate_and_save_model(trainer, test_dataset, config):
     trainer.save_model(config.save_dir)
 
 def compute_metrics(eval_pred):
-    logits, labels = eval_pred
-    predictions = torch.argmax(logits, axis=-1).detach().cpu().numpy()
-    labels = labels.detach().cpu().numpy()
+    """Compute accuracy, precision, recall, and F1 metrics."""
+    output, _ = eval_pred
     
-    # Calculate accuracy, precision, recall, F1
+    if isinstance(output, tuple):
+        logits = output[0]
+        labels = output[1]
+    else:
+        logits, labels = output
+    
+    if len(logits.shape) > 2:
+        logits = logits.squeeze()
+
+    predictions = np.argmax(logits, axis=-1)
+
     acc = accuracy_score(labels, predictions)
     precision, recall, f1, _ = precision_recall_fscore_support(labels, predictions, average='weighted')
-    
-    # Compute loss directly using model’s criterion (cross-entropy loss here as an example)
     loss_fn = torch.nn.CrossEntropyLoss()
     loss = loss_fn(torch.tensor(logits), torch.tensor(labels)).item()
-    
+
     return {
         "eval_accuracy": acc,
         "eval_precision": precision,
