@@ -51,6 +51,12 @@ def parse_json_to_df(json_data, key, config):
     df[config.timestamp_column] = pd.to_datetime(df[config.timestamp_column])
     return df
 
+def parse_local_df(data_dir, data_key, config):
+    path = os.path.join(data_dir, f"{data_key}_data.csv")
+    df = pd.read_csv(path)
+    df[config.timestamp_column] = pd.to_datetime(df[config.timestamp_column])
+    return df
+
 # Helper function to fetch data from a URL
 def fetch_data_from_url(endpoint, config, subset = None, offset=None):
     params = {
@@ -86,79 +92,35 @@ def fetch_data(config, subset = None, batch_index = None):
 
 # General fetch function to handle remote and local fetching
 def get_data(config, subset = None, batch_index = None):
-    '''
-    Not close to finished, need to fix up elif and else portions
-    '''
     if config.batch_train:
         # Fetch & return data in batches but only return once complete
         return fetch_data(config, subset = subset, batch_index = batch_index)
     elif config.data_loc == 'remote':
-        train_data, val_data, test_data = pd.DataFrame(), pd.DataFrame(), pd.DataFrame()
-        offset = 0
-        
-        # Fetch data in batches
+        batch_index = 0
+
         pbar = tqdm(desc="Fetching Data", unit="batch")
+        data_requested = subset or ['train','val','test']
+        current_data = map(lambda _: pd.DataFrame([]), data_requested)
         while True:
-            response_json = fetch_data_from_url(f"http://{TARGET_IP}:{PORT}/get_datasets", config, offset=offset)
-
-            train_data = pd.concat([train_data, parse_json_to_df(response_json, 'train_json', config)])
-            val_data = pd.concat([val_data, parse_json_to_df(response_json, 'val_json', config)])
-            test_data = pd.concat([test_data, parse_json_to_df(response_json, 'test_json', config)])
-
-            pbar.set_postfix({"Train Size": len(train_data), "Val Size": len(val_data), "Test Size": len(test_data)})
-            pbar.update(1)
-
-            # Stop if the response batch is smaller than requested
-            if len(response_json['train_json']) < config.data_batch_size and len(response_json['val_json']) < config.data_batch_size and len(response_json['test_json']) < config.data_batch_size:
+            fetched_data, fd2 = itertools.tee(fetch_data(config, subset = subset, batch_index = batch_index), 2)
+            null_returns = list(map(lambda output: output is None, list(fd2)))
+            if all(null_returns):
+                pbar.update(1)
                 break
             
-            offset += config.data_batch_size
+            current_data = map(lambda stored, fetched: pd.concat([stored, fetched]), zip(list(current_data), list(fetched_data)))
+
+            pbar.update(1)
+
+            batch_index += 1
 
         pbar.close()
-
-        pass
-
-        # Integration Attempt Starts Here
-        # if not subset:
-        #     subset = ['train', 'val', 'test']
-        # if 'train' in subset:
-        #     train_data = pd.DataFrame()
-        # if 'val' in subset:
-        #     val_data = pd.DataFrame()
-        # if 'test' in subset:
-        #     test_data = pd.DataFrame()
-
-        # batch_index = 0
-        # pbar = tqdm(desc="Fetching Data", unit="batch")
-        # while True:
-        #     data_map = list(fetch_data(config, subset = subset, batch_index = batch_index))
-        #     data_dict = {key: data_map[i] for i, key in enumerate(subset)}
-            
-        #     train_data = pd.concat([train_data, parse_json_to_df(response_json, 'train_json', config)])
-        #     val_data = pd.concat([val_data, parse_json_to_df(response_json, 'val_json', config)])
-        #     test_data = pd.concat([test_data, parse_json_to_df(response_json, 'test_json', config)])
-
-        #     pbar.set_postfix({"Train Size": len(train_data), "Val Size": len(val_data), "Test Size": len(test_data)})
-        #     pbar.update(1)
-
-        #     # Stop if the response batch is smaller than requested
-        #     if len(response_json['train_json']) < config.data_batch_size and len(response_json['val_json']) < config.data_batch_size and len(response_json['test_json']) < config.data_batch_size:
-        #         break
-
-        #     batch_index += 1
-
-        # pbar.close()
+        return current_data
         
     else:
         data_dir = os.path.join(ROOT_DIR, f'./e4data/train_test_split/{config.dataset_code}')
-        train_data = pd.read_csv(os.path.join(data_dir, 'train_data.csv'))
-        val_data = pd.read_csv(os.path.join(data_dir, 'val_data.csv'))
-        test_data = pd.read_csv(os.path.join(data_dir, 'test_data.csv'))
-        
-        for dataset in [train_data, val_data, test_data]:
-            dataset[config.timestamp_column] = pd.to_datetime(dataset[config.timestamp_column])
-
-    return train_data, val_data, test_data
+        data_requested = subset or ['train','val','test']
+        return map(lambda data_key: parse_local_df(data_dir, data_key, config), data_requested)
 
 def clean_data(data, config):
     if config.task == 'classification':
