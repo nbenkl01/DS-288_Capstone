@@ -30,7 +30,7 @@ def configure_model(config):
         "mode": "mix_channel",
         "scaling": "std",
     }
-    if config.task == 'classifier':
+    if config.task == 'classification':
         config_params.update({"num_targets": 2})
     else:
         config_params.update({"prediction_length": config.prediction_length})
@@ -115,7 +115,7 @@ def configure_training_args(config):
             'load_best_model_at_end':True
         }
     
-    if config.task == 'classifier':
+    if config.task == 'classification':
         training_arg_params.update({"metric_for_best_model": 'eval_f1',
                                     'greater_is_better':True})
     
