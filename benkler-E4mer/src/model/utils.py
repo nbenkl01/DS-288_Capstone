@@ -10,13 +10,13 @@ def setup_early_stopping():
         early_stopping_threshold=0.0001,
     )
 
-def evaluate_and_save_model(trainer, test_dataset, save_dir):
+def evaluate_and_save_model(trainer, test_dataset, config):
     """Evaluates the model on the test dataset and saves it to the specified directory."""
     results = trainer.evaluate(test_dataset)
     print("Test result:")
     print(results)
-    os.makedirs(save_dir, exist_ok=True)
-    trainer.save_model(save_dir)
+    os.makedirs(config.save_dir, exist_ok=True)
+    trainer.save_model(config.save_dir)
 
 def compute_metrics(eval_pred):
     logits, labels = eval_pred
