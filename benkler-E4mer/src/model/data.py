@@ -4,8 +4,7 @@ from tsfm_public.toolkit.time_series_preprocessor import TimeSeriesPreprocessor
 import pandas as pd
 from io import StringIO
 import itertools
-# from src.data import load, preprocess
-import requests  # For streaming data from the local server
+import requests
 from src.STATIC import API_KEY, ROOT_DIR, TARGET_IP, PORT
 from tqdm import tqdm
 
@@ -63,7 +62,7 @@ def fetch_data_from_url(endpoint, config, subset = None, offset=None):
         "dataset_code": config.dataset_code,
         "columns": config.relevant_columns
     }
-    if type(offset) == int:
+    if type(offset) is int:
         params.update({"batch_size": config.data_batch_size, "offset": offset})
     if subset:
         params.update({'subset':subset})
@@ -74,9 +73,7 @@ def fetch_data_from_url(endpoint, config, subset = None, offset=None):
 
 
 def fetch_data(config, subset = None, batch_index = None):
-    # If were doing batch training batch_index will be int so offset should be index*size otherwise it should be None
-    # If we're not doing batch training, just batch loading, it should be 0
-    offset = batch_index * config.data_batch_size if batch_index else None if config.batch_train else 0
+    offset = batch_index * config.data_batch_size if batch_index else None
     endpoint = f"http://{TARGET_IP}:{PORT}/get_datasets"
 
     response_json = fetch_data_from_url(endpoint, config, subset, offset)
