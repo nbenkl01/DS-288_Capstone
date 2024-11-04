@@ -37,6 +37,7 @@ def configure_model(config):
 
     return PatchTSMixerConfig(**config_params)
 
+
 def configure_masked_transformer(config):
     """
     Configures the PatchTSMixer model with specified parameters.
@@ -78,6 +79,52 @@ def configure_classifier(config):
         mode="mix_channel",
         scaling="std",
     )
+
+
+def configure_training_args(config):
+    """
+    Sets up training arguments for the trainer.
+    Args:
+        checkpoint_dir (str): Directory to save checkpoints.
+        train_epochs (int): Number of training epochs.
+        batch_size (int): Batch size for training and evaluation.
+        num_workers (int): Number of workers for data loading.
+        run_name (str, optional): Name of the training run for logging.
+        eval_metric (str): Metric to use for best model selection.
+        greater_is_better (bool): Whether higher metric is better.
+    Returns:
+        TrainingArguments: Configuration for training setup.
+    """
+    
+    training_arg_params = {
+            'output_dir':os.path.join(config.checkpoint_dir, "output"),
+            'overwrite_output_dir':True,
+            'learning_rate':0.001,
+            'num_train_epochs':config.train_epochs,
+            'do_eval' : True,
+            'eval_strategy':"epoch",
+            'per_device_train_batch_size':config.batch_size,
+            'per_device_eval_batch_size':config.batch_size,
+            'dataloader_num_workers':config.num_workers,
+            'report_to':"wandb",
+            'run_name':config.run_name,
+            'save_strategy':"epoch",
+            'logging_strategy':"epoch",
+            'save_total_limit':3,
+            'logging_dir':os.path.join(config.checkpoint_dir, "logs"),
+            'load_best_model_at_end':True
+        }
+    
+    if config.task == 'classifier':
+        training_arg_params.update({"metric_for_best_model": 'eval_f1',
+                                    'greater_is_better':True})
+    
+    training_args = TrainingArguments(
+                    **training_arg_params
+                )
+    return training_args
+
+
 
 def pretrain_training_args(config):
     """
