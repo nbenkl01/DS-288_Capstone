@@ -31,6 +31,7 @@ def train_model(model, training_args, early_stopping_callback, config):
     """
     batch_index = 0
     trainer = None
+    tsp=None
     
     while config.batch_train:
         try:
@@ -40,7 +41,7 @@ def train_model(model, training_args, early_stopping_callback, config):
                 break
 
             train_data, val_data = map(lambda data: clean_data(data, config), [train_data, val_data])
-            tsp, train_dataset = preprocess(train_data, config, tsp=None if batch_index == 0 else tsp, fit = True)
+            tsp, train_dataset = preprocess(train_data, config, tsp=tsp, fit = True)
             _, val_dataset = preprocess(val_data, config, tsp=tsp, fit = False)
             
             if trainer is None:
