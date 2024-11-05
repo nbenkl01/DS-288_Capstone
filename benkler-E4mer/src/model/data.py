@@ -12,7 +12,11 @@ def preprocess(data, config, tsp=None, fit = False):
     """
     Preprocess a batch of data and return a PretrainDFDataset object.
     """
-    data = data.loc[:, config.relevant_columns].copy()
+    relevant_columns = config.relevant_columns
+    if config.task == 'classification':
+        relevant_columns = relevant_columns.drop(config.target_columns) + ['label']
+    
+    data = data.loc[:, relevant_columns].copy()
 
     shared_params = {'timestamp_column':config.timestamp_column,
                     'id_columns':config.id_columns,
