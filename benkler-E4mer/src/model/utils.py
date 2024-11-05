@@ -35,7 +35,7 @@ def compute_metrics(eval_pred):
     predictions = np.argmax(logits, axis=-1)
 
     acc = accuracy_score(labels, predictions)
-    precision, recall, f1, _ = precision_recall_fscore_support(labels, predictions, average='weighted')
+    precision, recall, f1, _ = precision_recall_fscore_support(labels, predictions, average='weighted', zero_division=0.0)
     loss_fn = torch.nn.CrossEntropyLoss()
     loss = loss_fn(torch.tensor(logits), torch.tensor(labels)).item()
 
