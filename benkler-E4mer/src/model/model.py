@@ -8,7 +8,7 @@ from src.model.config import configure_model, configure_training_args
 from src.model.utils import setup_early_stopping, evaluate_and_save_model, compute_metrics
 from src.model.custom_models import CustomPatchTSMixerForTimeSeriesClassification
 
-def initialize_trainer(model, training_args, train_dataset, val_dataset, compute_metrics, early_stopping_callback, config):
+def initialize_trainer(model, training_args, train_dataset, val_dataset, early_stopping_callback, config):
     """Initializes the Trainer with common configurations."""
     trainer_params = {
             'model':model,
@@ -46,10 +46,14 @@ def train_model(model, training_args, early_stopping_callback, config):
         _, val_dataset = preprocess(val_data, config, tsp=tsp, fit = False)
         
         if trainer is None:
-            trainer = initialize_trainer(model, training_args, train_dataset, val_dataset, compute_metrics, early_stopping_callback, config)
+            trainer = initialize_trainer(model, training_args, train_dataset, val_dataset, early_stopping_callback, config)
         else:
             trainer.train_dataset, trainer.eval_dataset = train_dataset, val_dataset
+        
+        print('Training:')
+        print(trainer)
         trainer.train()
+        print('Training Iteration Complete')
         batch_index += 1
         # except Exception:
         #     print("No more batches available.")
