@@ -138,7 +138,7 @@ def clean_data(data, config):
         data['label']=data[config.target_columns].astype(float)
     for col in config.input_columns:
         data[col] = data[col].astype(float)
-    return map_return(data)
+    return data
 
 def map_return(map_contents, subset):
     return list(map_contents)[0] if len(subset) == 1 else map_contents
