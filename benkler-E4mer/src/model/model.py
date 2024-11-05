@@ -125,7 +125,7 @@ def train_model(model, training_args, early_stopping_callback, config):
         train_data, val_data = map(lambda data: clean_data(data, config), [train_data, val_data])
         tsp, train_dataset = preprocess(train_data, config, tsp=None, fit = True)
         _, val_dataset = preprocess(val_data, config, tsp=tsp, fit = False)
-        trainer = initialize_trainer(model, training_args, train_dataset, val_dataset, compute_metrics, early_stopping_callback, config)
+        trainer = initialize_trainer(model, training_args, train_dataset, val_dataset, early_stopping_callback, config)
         trainer.train()
 
     return trainer, tsp
