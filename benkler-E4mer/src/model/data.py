@@ -62,7 +62,8 @@ def fetch_data_from_url(endpoint, config, subset = None, offset=None):
         "dataset_code": config.dataset_code,
         "columns": config.relevant_columns
     }
-    if type(offset) == int:
+    print(type(offset))
+    if type(offset) is int:
         print('posting with offset')
         params.update({"batch_size": config.data_batch_size, "offset": offset})
     if subset:
@@ -75,8 +76,9 @@ def fetch_data_from_url(endpoint, config, subset = None, offset=None):
 
 
 def fetch_data(config, subset = None, batch_index = None):
+    print(f'batch_index: {batch_index}')
     offset = batch_index * config.data_batch_size if batch_index else None
-    print(offset)
+    print(f'offset: {offset}')
     endpoint = f"http://{TARGET_IP}:{PORT}/get_datasets"
 
     response_json = fetch_data_from_url(endpoint, config, subset, offset)

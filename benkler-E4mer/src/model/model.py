@@ -33,6 +33,7 @@ def train_model(model, training_args, early_stopping_callback, config):
     trainer = None
     tsp=None
     
+    print(f"batch_train: {config.batch_train}")
     while config.batch_train:
         try:
             train_data, val_data = get_data(config, subset = ['train', 'val'], batch_index = batch_index)
