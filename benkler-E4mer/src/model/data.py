@@ -119,7 +119,7 @@ def get_data(config, subset = None, batch_index = None):
                 pbar.update(1)
                 break
             
-            current_data = map(lambda stored, fetched: pd.concat([stored, fetched]), zip(list(current_data), list(fetched_data)))
+            current_data = map(lambda stored, fetched: pd.concat([stored, fetched]), list(current_data), list(fetched_data))
 
             pbar.update(1)
 
