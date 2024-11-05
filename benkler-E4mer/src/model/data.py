@@ -52,7 +52,8 @@ def preprocess(data, config, tsp=None, fit = False):
 # Helper function to parse JSON response to DataFrame
 def parse_json_to_df(json_data, key, config):
     df = pd.read_json(StringIO(json_data[key]), orient='records')
-    df[config.timestamp_column] = pd.to_datetime(df[config.timestamp_column])
+    if not df.empty:
+        df[config.timestamp_column] = pd.to_datetime(df[config.timestamp_column])
     return df
 
 def parse_local_df(data_dir, data_key, config):
