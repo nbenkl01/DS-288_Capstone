@@ -62,7 +62,7 @@ def fetch_data_from_url(endpoint, config, subset = None, offset=None):
         "dataset_code": config.dataset_code,
         "columns": config.relevant_columns
     }
-    if type(offset) is int:
+    if type(offset) == int:
         print('posting with offset')
         params.update({"batch_size": config.data_batch_size, "offset": offset})
     if subset:
