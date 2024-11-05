@@ -31,7 +31,7 @@ def preprocess(data, config, tsp=None, fit = False):
                                'label_column':'label', 
                                'stride': config.stride})
     else:
-        processor_params.update({'scaling':True, 'target_columns':config.input_columns})
+        processor_params.update({'scaling':False, 'target_columns':config.input_columns})
     
     if tsp is None:  # Initialize the preprocessor if not done already
         tsp = TimeSeriesPreprocessor(
