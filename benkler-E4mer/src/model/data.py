@@ -74,6 +74,8 @@ def fetch_data_from_url(endpoint, config, subset = None, offset=None):
         params.update({"batch_size": config.data_batch_size, "offset": offset})
     if subset:
         params.update({'subset':subset})
+    if config.batch_train:
+        params.update({'loop':True})
     
     # print(params)
     response = requests.get(endpoint, params=params, headers={"x-api-key": API_KEY})
