@@ -14,6 +14,7 @@ def pretrain_E4mer_base():
                     checkpoint_dir=os.path.join(ROOT_DIR, "checkpoint/unlabelled_pretrain"),
                     save_dir=os.path.join(ROOT_DIR, "models/unlabelled_pretrain"),
                     run_name=f"unlabelled_pretrain_{datetime.today().strftime('%Y-%m-%d %H:%M:%S')}",
+                    stride=1,
                     )
     model.run_training_task(config)
 
@@ -28,6 +29,7 @@ def finetune_nurse_SSL(nurse = None):
                     save_dir=os.path.join(ROOT_DIR, f"models/Nurse{nurse or 's'}_SSLFinetune"), 
                     run_name=f"Nurse{nurse or 's'}_SSLFinetune_{datetime.today().strftime('%Y-%m-%d %H:%M:%S')}",
                     batch_train=False,
+                    stride=1,
                     )
     model.run_training_task(config)
 
