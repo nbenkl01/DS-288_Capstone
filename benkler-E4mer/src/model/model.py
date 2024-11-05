@@ -41,10 +41,14 @@ def train_model(model, training_args, early_stopping_callback, config):
             print("No more batches to fetch.")
             break
         
+        print('Loading Data')
         train_data, val_data = map(lambda data: clean_data(data, config), [train_data, val_data])
+        print('Preprocessing Training')
         tsp, train_dataset = preprocess(train_data, config, tsp=tsp, fit = True)
+        print('Preprocessing Validation')
         _, val_dataset = preprocess(val_data, config, tsp=tsp, fit = False)
         
+        print('Initializing Trainer')
         if trainer is None:
             trainer = initialize_trainer(model, training_args, train_dataset, val_dataset, early_stopping_callback, config)
         else:
