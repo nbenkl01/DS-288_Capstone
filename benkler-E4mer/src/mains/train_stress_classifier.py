@@ -2,8 +2,8 @@ import os
 from src.model import model as model
 from datetime import datetime
 import argparse
-from src.STATIC import ROOT_DIR
 from src.utils.config import Config
+from src.STATIC import ROOT_DIR
 
 def train_WESAD_benchmark():
     config = Config(dataset_code='WESAD', 
