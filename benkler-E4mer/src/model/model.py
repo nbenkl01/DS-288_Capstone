@@ -83,6 +83,7 @@ def train_model(model, training_args, early_stopping_callback, config):
     tsp=None
     
     print(f"Batch Train: {config.batch_train}")
+    print(f"Batch Val: {config.batch_val}")
     while config.batch_train:
         if config.batch_val:
             train_data, val_data = get_data(config, subset = ['train', 'val'], batch_index = batch_index)
