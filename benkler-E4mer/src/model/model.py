@@ -118,7 +118,9 @@ def train_model(model, training_args, early_stopping_callback, config):
     
     if not config.batch_train:
         # If batch training is disabled, fetch and preprocess all data at once
-        train_data, val_data = get_data(config, subset = ['train', 'val'])
+        train_data = get_data(config, subset = ['train'], batch_index = batch_index)
+        val_data = get_data(config, subset = ['val'], batch_index = batch_index)
+        # train_data, val_data = get_data(config, subset = ['train', 'val'])
         train_data, val_data = map(lambda data: clean_data(data, config), [train_data, val_data])
         tsp, train_dataset = preprocess(train_data, config, tsp=None, fit = True)
         _, val_dataset = preprocess(val_data, config, tsp=tsp, fit = False)
