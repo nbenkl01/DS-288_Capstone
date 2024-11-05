@@ -17,16 +17,16 @@ def pretrain_E4mer_base():
                     )
     model.run_training_task(config)
 
-def finetune_nurse_SSL(nurse):
-    config = Config(dataset_code=f'Nurses/{nurse}/unlabelled',
+def finetune_nurse_SSL(nurse = None):
+    config = Config(dataset_code=f"Nurses/{nurse or '.'}/unlabelled",
                     task='masked_prediction',
                     input_columns=['acc_l2_mean','hrv_cvsd','eda_tonic_mean','eda_phasic_mean'],
                     id_columns=['subject_id','session_id'],
                     finetune=True,
                     pretrained_model_dir=os.path.join(ROOT_DIR, "models/unlabelled_pretrain"),
-                    checkpoint_dir=os.path.join(ROOT_DIR, f"checkpoint/Nurse{nurse}_SSLFinetune"),
-                    save_dir=os.path.join(ROOT_DIR, f"models/Nurse{nurse}_SSLFinetune"), 
-                    run_name=f"Nurse{nurse}_SSLFinetune_{datetime.today().strftime('%Y-%m-%d %H:%M:%S')}",
+                    checkpoint_dir=os.path.join(ROOT_DIR, f"checkpoint/Nurse{nurse or 's'}_SSLFinetune"),
+                    save_dir=os.path.join(ROOT_DIR, f"models/Nurse{nurse or 's'}_SSLFinetune"), 
+                    run_name=f"Nurse{nurse or 's'}_SSLFinetune_{datetime.today().strftime('%Y-%m-%d %H:%M:%S')}",
                     )
     model.run_training_task(config)
 
@@ -43,7 +43,8 @@ def main():
         if args.nurse:
             finetune_nurse_SSL(args.nurse)
         else:
-            print("Please provide a nurse ID with --nurse for fine-tuning.")
+            finetune_nurse_SSL()
+            # print("Please provide a nurse ID with --nurse for fine-tuning.")
 
 if __name__ == "__main__":
     main()

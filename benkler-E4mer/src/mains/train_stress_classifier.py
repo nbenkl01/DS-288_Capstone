@@ -12,9 +12,22 @@ def train_WESAD_benchmark():
                     target_columns='binary_stress',
                     id_columns=['subject_id','condition'],
                     finetune=False,
-                    checkpoint_dir=os.path.join(ROOT_DIR, "checkpoint/stress_event_baseline"),
-                    save_dir=os.path.join(ROOT_DIR, "models/stress_event_baseline"),
+                    checkpoint_dir=os.path.join(ROOT_DIR, "checkpoint/stress_event_baseline/WESAD"),
+                    save_dir=os.path.join(ROOT_DIR, "models/stress_event_baseline/WESAD"),
                     run_name=f"WESAD_benchmark_{datetime.today().strftime('%Y-%m-%d %H:%M:%S')}",
+                    )
+    model.run_training_task(config)
+
+def train_Nurses_benchmark():
+    config = Config(dataset_code='Nurses/labelled', 
+                    task='classification',
+                    input_columns=['acc_l2_mean','hrv_cvsd','eda_tonic_mean','eda_phasic_mean'],
+                    target_columns='binary_stress',
+                    id_columns=['subject_id','session_id'],
+                    finetune=False,
+                    checkpoint_dir=os.path.join(ROOT_DIR, "checkpoint/stress_event_baseline/Nurses"),
+                    save_dir=os.path.join(ROOT_DIR, "models/stress_event_baseline/Nurses"),
+                    run_name=f"Nurses_benchmark_{datetime.today().strftime('%Y-%m-%d %H:%M:%S')}",
                     )
     model.run_training_task(config)
 
@@ -35,12 +48,16 @@ def finetune_stress_E4mer(pretrained_model='unlabelled_pretrain'):
 def main():
     parser = argparse.ArgumentParser(description="Train or fine-tune E4mer model on WESAD benchmark.")
     parser.add_argument("--mode", type=str, choices=["train", "finetune"], required=True, help="Choose between training or fine-tuning.")
+    parser.add_argument("--dataset", type=str, choices=["WESAD", "Nurses"], default='WESAD', help="Choose a dataset.")
     parser.add_argument("--pretrained_model", type=str, default="unlabelled_pretrain", help="Specify the pretrained model directory for fine-tuning.")
 
     args = parser.parse_args()
 
     if args.mode == "train":
-        train_WESAD_benchmark()
+        if args.dataset == 'WESAD':
+            train_WESAD_benchmark()
+        else:
+            train_Nurses_benchmark()
     elif args.mode == "finetune":
         finetune_stress_E4mer(args.pretrained_model)
 
