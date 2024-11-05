@@ -14,7 +14,8 @@ def preprocess(data, config, tsp=None, fit = False):
     """
     relevant_columns = config.relevant_columns
     if config.task == 'classification':
-        relevant_columns = relevant_columns.drop(config.target_columns) + ['label']
+        relevant_columns.remove(config.target_columns)
+        relevant_columns = relevant_columns + ['label']
     
     data = data.loc[:, relevant_columns].copy()
 
