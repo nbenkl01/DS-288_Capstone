@@ -82,6 +82,7 @@ def train_model(model, training_args, early_stopping_callback, config):
     trainer = None
     tsp=None
     
+    print(f"Batch Train: {config.batch_train}")
     while config.batch_train:
         if batch_index == 0:
             config.set_attribute(batch_train = False)
