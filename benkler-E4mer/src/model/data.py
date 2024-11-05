@@ -82,6 +82,7 @@ def fetch_data(config, subset = None, batch_index = None):
     endpoint = f"http://{TARGET_IP}:{PORT}/get_datasets"
 
     response_json = fetch_data_from_url(endpoint, config, subset, offset)
+    print(response_json)
     
     data_requested = subset or ['train','val','test']
     parsed_data, pd2 = itertools.tee(map(lambda data_key: parse_json_to_df(response_json, f"{data_key}_json", config), data_requested), 2)
