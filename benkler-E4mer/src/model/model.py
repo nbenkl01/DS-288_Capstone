@@ -83,7 +83,8 @@ def train_model(model, training_args, early_stopping_callback, config):
     tsp=None
     
     config.set_attribute(batch_train = False)
-    val_data = clean_data(get_data(config, subset = ['val'], batch_index = batch_index), config)
+    val_data = get_data(config, subset = ['val'], batch_index = batch_index)
+    val_data = clean_data(val_data, config)
     config.set_attribute(batch_train = True)
     while config.batch_train:
         # try:
