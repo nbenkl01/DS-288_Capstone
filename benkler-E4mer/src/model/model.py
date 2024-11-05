@@ -40,7 +40,9 @@ def train_model(model, training_args, early_stopping_callback, config):
             if type(train_data) is type(None) and type(val_data) is type(None):
                 print("No more batches to fetch.")
                 break
-
+            
+            print(train_data)
+            print(val_data)
             train_data, val_data = map(lambda data: clean_data(data, config), [train_data, val_data])
             tsp, train_dataset = preprocess(train_data, config, tsp=tsp, fit = True)
             _, val_dataset = preprocess(val_data, config, tsp=tsp, fit = False)

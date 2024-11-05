@@ -89,6 +89,7 @@ def fetch_data(config, subset = None, batch_index = None):
     if all(empty_dfs):
         return map(lambda _: None, empty_dfs)
     
+    print(empty_dfs)
     print('returning parsed data')
 
     return parsed_data
