@@ -62,23 +62,23 @@ def fetch_data_from_url(endpoint, config, subset = None, offset=None):
         "dataset_code": config.dataset_code,
         "columns": config.relevant_columns
     }
-    print(type(offset))
+    # print(type(offset))
     if type(offset) is int:
-        print('posting with offset')
+        # print('posting with offset')
         params.update({"batch_size": config.data_batch_size, "offset": offset})
     if subset:
         params.update({'subset':subset})
     
-    print(params)
+    # print(params)
     response = requests.get(endpoint, params=params, headers={"x-api-key": API_KEY})
     response.raise_for_status()
     return response.json()
 
 
 def fetch_data(config, subset = None, batch_index = None):
-    print(f'batch_index: {batch_index}')
+    # print(f'batch_index: {batch_index}')
     offset = batch_index * config.data_batch_size if type(batch_index) is int else None
-    print(f'offset: {offset}')
+    # print(f'offset: {offset}')
     endpoint = f"http://{TARGET_IP}:{PORT}/get_datasets"
 
     response_json = fetch_data_from_url(endpoint, config, subset, offset)
@@ -89,8 +89,8 @@ def fetch_data(config, subset = None, batch_index = None):
     if all(empty_dfs):
         return map(lambda _: None, empty_dfs)
     
-    print(empty_dfs)
-    print('returning parsed data')
+    # print(empty_dfs)
+    # print('returning parsed data')
 
     return parsed_data
     

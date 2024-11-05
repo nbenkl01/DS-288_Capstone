@@ -35,27 +35,25 @@ def train_model(model, training_args, early_stopping_callback, config):
     
     print(f"batch_train: {config.batch_train}")
     while config.batch_train:
-        try:
-            train_data, val_data = get_data(config, subset = ['train', 'val'], batch_index = batch_index)
-            if type(train_data) is type(None) and type(val_data) is type(None):
-                print("No more batches to fetch.")
-                break
-            
-            print(train_data)
-            print(val_data)
-            train_data, val_data = map(lambda data: clean_data(data, config), [train_data, val_data])
-            tsp, train_dataset = preprocess(train_data, config, tsp=tsp, fit = True)
-            _, val_dataset = preprocess(val_data, config, tsp=tsp, fit = False)
-            
-            if trainer is None:
-                trainer = initialize_trainer(model, training_args, train_dataset, val_dataset, compute_metrics, early_stopping_callback, config)
-            else:
-                trainer.train_dataset, trainer.eval_dataset = train_dataset, val_dataset
-            trainer.train()
-            batch_index += 1
-        except Exception:
-            print("No more batches available.")
+        # try:
+        train_data, val_data = get_data(config, subset = ['train', 'val'], batch_index = batch_index)
+        if type(train_data) is type(None) and type(val_data) is type(None):
+            print("No more batches to fetch.")
             break
+        
+        train_data, val_data = map(lambda data: clean_data(data, config), [train_data, val_data])
+        tsp, train_dataset = preprocess(train_data, config, tsp=tsp, fit = True)
+        _, val_dataset = preprocess(val_data, config, tsp=tsp, fit = False)
+        
+        if trainer is None:
+            trainer = initialize_trainer(model, training_args, train_dataset, val_dataset, compute_metrics, early_stopping_callback, config)
+        else:
+            trainer.train_dataset, trainer.eval_dataset = train_dataset, val_dataset
+        trainer.train()
+        batch_index += 1
+        # except Exception:
+        #     print("No more batches available.")
+        #     break
     
     if not config.batch_train:
         # If batch training is disabled, fetch and preprocess all data at once
