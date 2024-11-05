@@ -15,6 +15,7 @@ def train_WESAD_benchmark():
                     checkpoint_dir=os.path.join(ROOT_DIR, "checkpoint/stress_event_baseline/WESAD"),
                     save_dir=os.path.join(ROOT_DIR, "models/stress_event_baseline/WESAD"),
                     run_name=f"WESAD_benchmark_{datetime.today().strftime('%Y-%m-%d %H:%M:%S')}",
+                    batch_train=False,
                     )
     model.run_training_task(config)
 
