@@ -77,7 +77,7 @@ def fetch_data_from_url(endpoint, config, subset = None, offset=None):
 
 def fetch_data(config, subset = None, batch_index = None):
     print(f'batch_index: {batch_index}')
-    offset = batch_index * config.data_batch_size if batch_index else None
+    offset = batch_index * config.data_batch_size if type(batch_index) is int else None
     print(f'offset: {offset}')
     endpoint = f"http://{TARGET_IP}:{PORT}/get_datasets"
 
