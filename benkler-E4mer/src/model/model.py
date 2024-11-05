@@ -84,21 +84,27 @@ def train_model(model, training_args, early_stopping_callback, config):
     
     print(f"Batch Train: {config.batch_train}")
     while config.batch_train:
-        if batch_index == 0:
-            config.set_attribute(batch_train = False)
-            print("Just checking we're still here")
-            val_data = get_data(config, subset = ['val'], batch_index = batch_index)
-            val_data = clean_data(val_data, config)
-            config.set_attribute(batch_train = True)
-            print('Past Val Loading')
-        # try:
-        train_data = get_data(config, subset = ['train'], batch_index = batch_index)
-        if type(train_data) is type(None):
-            print("No more batches to fetch.")
-            break
-        
-        # print('Loading Data')
-        train_data = clean_data(train_data, config)
+        if config.batch_val:
+            train_data, val_data = get_data(config, subset = ['train', 'val'], batch_index = batch_index)
+            if type(train_data) is type(None) and type(val_data) is type(None):
+                print("No more batches to fetch.")
+                break
+            
+            train_data, val_data = map(lambda data: clean_data(data, config), [train_data, val_data])
+        else:
+            if batch_index == 0:
+                config.set_attribute(batch_train = False)
+                val_data = get_data(config, subset = ['val'], batch_index = batch_index)
+                val_data = clean_data(val_data, config)
+                config.set_attribute(batch_train = True)
+            
+            train_data = get_data(config, subset = ['train'], batch_index = batch_index)
+            if type(train_data) is type(None):
+                print("No more batches to fetch.")
+                break
+            
+            train_data = clean_data(train_data, config)
+
         # print('Preprocessing Training')
         tsp, train_dataset = preprocess(train_data, config, tsp=tsp, fit = True)
         # print('Preprocessing Validation')
