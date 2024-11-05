@@ -46,7 +46,7 @@ class Config:
     def _initialize_dataset_params(self, dataset_code, input_columns, target_columns, id_columns, timestamp_column):
         self.dataset_code = dataset_code
         self.input_columns = input_columns
-        self.target_columns = target_columns
+        self.target_columns = target_columns or []
         self.id_columns = id_columns or []
         self.timestamp_column = timestamp_column
     
