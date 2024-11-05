@@ -105,7 +105,7 @@ def fetch_data(config, subset = None, batch_index = None):
 def get_data(config, subset = None, batch_index = None):
     if config.batch_train:
         # Fetch & return data in batches but only return once complete
-        return map_return(fetch_data(config, subset = subset, batch_index = batch_index))
+        return map_return(fetch_data(config, subset = subset, batch_index = batch_index), subset)
     elif config.data_loc == 'remote':
         batch_index = 0
 
@@ -126,12 +126,12 @@ def get_data(config, subset = None, batch_index = None):
             batch_index += 1
 
         pbar.close()
-        return map_return(current_data)
+        return map_return(current_data, subset)
         
     else:
         data_dir = os.path.join(ROOT_DIR, f'./e4data/train_test_split/{config.dataset_code}')
         data_requested = subset or ['train','val','test']
-        return map(lambda data_key: parse_local_df(data_dir, data_key, config), data_requested)
+        return map_return(map(lambda data_key: parse_local_df(data_dir, data_key, config), data_requested), subset)
 
 def clean_data(data, config):
     if config.task == 'classification':
