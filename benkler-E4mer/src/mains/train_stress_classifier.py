@@ -29,6 +29,7 @@ def train_Nurses_benchmark():
                     checkpoint_dir=os.path.join(ROOT_DIR, "checkpoint/stress_event_baseline/Nurses"),
                     save_dir=os.path.join(ROOT_DIR, "models/stress_event_baseline/Nurses"),
                     run_name=f"Nurses_benchmark_{datetime.today().strftime('%Y-%m-%d %H:%M:%S')}",
+                    batch_train=False,
                     )
     model.run_training_task(config)
 
@@ -43,6 +44,7 @@ def finetune_stress_E4mer(pretrained_model='unlabelled_pretrain'):
                     checkpoint_dir=os.path.join(ROOT_DIR, f"checkpoint/stress_event_finetune/{pretrained_model}"),
                     save_dir=os.path.join(ROOT_DIR, f"models/stress_event_finetune/{pretrained_model}"),
                     run_name=f"WESAD_{pretrained_model.split('_')[0]}_finetune_{datetime.today().strftime('%Y-%m-%d %H:%M:%S')}",
+                    batch_train=False,
                     )
     model.run_training_task(config)
 
