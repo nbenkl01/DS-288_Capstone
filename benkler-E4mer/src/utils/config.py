@@ -76,3 +76,11 @@ class Config:
     @property
     def relevant_columns(self):
         return list(collapse([self.timestamp_column, self.id_columns, self.input_columns, self.target_columns]))
+    
+    def set_attribute(self, **kwargs):
+        """Set attributes based on provided keyword arguments."""
+        for key, value in kwargs.items():
+            if hasattr(self, key):
+                setattr(self, key, value)
+            else:
+                raise AttributeError(f"{key} is not a valid attribute of Config.")
