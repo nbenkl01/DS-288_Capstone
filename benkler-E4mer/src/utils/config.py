@@ -39,7 +39,7 @@ class Config:
         self._initialize_evaluation_params(eval_metric, greater_is_better)
 
     def _initialize_task(self, task, finetune):
-        self.fintune = finetune
+        self.finetune = finetune
         self.task = task
         
     def _initialize_dataset_params(self, dataset_code, input_columns, target_columns, id_columns, timestamp_column):
