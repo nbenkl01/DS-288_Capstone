@@ -18,6 +18,7 @@ def evaluate_and_save_model(trainer, test_dataset, config):
     print(results)
     os.makedirs(config.save_dir, exist_ok=True)
     trainer.save_model(config.save_dir)
+    print(f"Best model saved to: {config.save_dir}")
 
 def compute_metrics(eval_pred):
     """Compute accuracy, precision, recall, and F1 metrics."""
