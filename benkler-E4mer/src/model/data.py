@@ -105,7 +105,7 @@ def fetch_data(config, subset = None, batch_index = None):
 def get_data(config, subset = None, batch_index = None):
     if config.batch_train:
         # Fetch & return data in batches but only return once complete
-        return fetch_data(config, subset = subset, batch_index = batch_index)
+        return map_return(fetch_data(config, subset = subset, batch_index = batch_index))
     elif config.data_loc == 'remote':
         batch_index = 0
 
@@ -126,7 +126,7 @@ def get_data(config, subset = None, batch_index = None):
             batch_index += 1
 
         pbar.close()
-        return current_data
+        return map_return(current_data)
         
     else:
         data_dir = os.path.join(ROOT_DIR, f'./e4data/train_test_split/{config.dataset_code}')
@@ -138,4 +138,7 @@ def clean_data(data, config):
         data['label']=data[config.target_columns].astype(float)
     for col in config.input_columns:
         data[col] = data[col].astype(float)
-    return data
+    return map_return(data)
+
+def map_return(map_contents, subset):
+    return list(map_contents)[0] if len(subset) == 1 else map_contents

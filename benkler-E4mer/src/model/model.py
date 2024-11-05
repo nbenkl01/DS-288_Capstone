@@ -83,13 +83,13 @@ def train_model(model, training_args, early_stopping_callback, config):
     tsp=None
     
     config.set_attribute(batch_train = False)
-    val_data = list(get_data(config, subset = ['val'], batch_index = batch_index))[0]
+    val_data = get_data(config, subset = ['val'], batch_index = batch_index)
     val_data = clean_data(val_data, config)
     config.set_attribute(batch_train = True)
     print('Past Val Loading')
     while config.batch_train:
         # try:
-        train_data = list(get_data(config, subset = ['train'], batch_index = batch_index))[0]
+        train_data = get_data(config, subset = ['train'], batch_index = batch_index)
         if type(train_data) is type(None):
             print("No more batches to fetch.")
             break
