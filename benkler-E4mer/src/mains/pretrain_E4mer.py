@@ -14,6 +14,7 @@ def pretrain_E4mer_base():
                     checkpoint_dir=os.path.join(ROOT_DIR, "checkpoint/unlabelled_pretrain"),
                     save_dir=os.path.join(ROOT_DIR, "models/unlabelled_pretrain"),
                     run_name=f"unlabelled_pretrain_{datetime.today().strftime('%Y-%m-%d %H:%M:%S')}",
+                    batch_train=False,
                     stride=1,
                     )
     model.run_training_task(config)
