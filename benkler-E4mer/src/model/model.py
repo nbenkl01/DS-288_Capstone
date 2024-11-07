@@ -25,55 +25,6 @@ def initialize_trainer(model, training_args, train_dataset, val_dataset, early_s
     
     return trainer
 
-# def train_model(model, training_args, early_stopping_callback, config):
-#     """
-#     Handles both batch and non-batch training, depending on memory constraints.
-#     """
-#     batch_index = 0
-#     trainer = None
-#     tsp=None
-    
-#     # print(f"batch_train: {config.batch_train}")
-#     while config.batch_train:
-#         # try:
-#         train_data, val_data = get_data(config, subset = ['train', 'val'], batch_index = batch_index)
-#         if type(train_data) is type(None) and type(val_data) is type(None):
-#             print("No more batches to fetch.")
-#             break
-        
-#         # print('Loading Data')
-#         train_data, val_data = map(lambda data: clean_data(data, config), [train_data, val_data])
-#         # print('Preprocessing Training')
-#         tsp, train_dataset = preprocess(train_data, config, tsp=tsp, fit = True)
-#         # print('Preprocessing Validation')
-#         _, val_dataset = preprocess(val_data, config, tsp=tsp, fit = False)
-        
-#         # print('Initializing Trainer')
-#         if trainer is None:
-#             trainer = initialize_trainer(model, training_args, train_dataset, val_dataset, early_stopping_callback, config)
-#         else:
-#             trainer.train_dataset, trainer.eval_dataset = train_dataset, val_dataset
-        
-#         # print('Training:')
-#         print(trainer)
-#         trainer.train()
-#         # print('Training Iteration Complete')
-#         batch_index += 1
-#         # except Exception:
-#         #     print("No more batches available.")
-#         #     break
-    
-#     if not config.batch_train:
-#         # If batch training is disabled, fetch and preprocess all data at once
-#         train_data, val_data = get_data(config, subset = ['train', 'val'])
-#         train_data, val_data = map(lambda data: clean_data(data, config), [train_data, val_data])
-#         tsp, train_dataset = preprocess(train_data, config, tsp=None, fit = True)
-#         _, val_dataset = preprocess(val_data, config, tsp=tsp, fit = False)
-#         trainer = initialize_trainer(model, training_args, train_dataset, val_dataset, compute_metrics, early_stopping_callback, config)
-#         trainer.train()
-
-#     return trainer, tsp
-
 def train_model(model, training_args, early_stopping_callback, config):
     """
     Handles both batch and non-batch training, depending on memory constraints.
@@ -82,8 +33,6 @@ def train_model(model, training_args, early_stopping_callback, config):
     trainer = None
     tsp=None
     
-    print(f"Batch Train: {config.batch_train}")
-    print(f"Batch Val: {config.batch_val}")
     while config.batch_train:
         if config.batch_val:
             train_data, val_data = get_data(config, subset = ['train', 'val'], batch_index = batch_index)
@@ -106,31 +55,20 @@ def train_model(model, training_args, early_stopping_callback, config):
             
             train_data = clean_data(train_data, config)
 
-        # print('Preprocessing Training')
         tsp, train_dataset = preprocess(train_data, config, tsp=tsp, fit = True)
-        # print('Preprocessing Validation')
         _, val_dataset = preprocess(val_data, config, tsp=tsp, fit = False)
         
-        # print('Initializing Trainer')
         if trainer is None:
             trainer = initialize_trainer(model, training_args, train_dataset, val_dataset, early_stopping_callback, config)
         else:
             trainer.train_dataset, trainer.eval_dataset = train_dataset, val_dataset
         
-        # print('Training:')
-        print(trainer)
         trainer.train()
-        # print('Training Iteration Complete')
         batch_index += 1
-        # except Exception:
-        #     print("No more batches available.")
-        #     break
     
     if not config.batch_train:
         # If batch training is disabled, fetch and preprocess all data at once
-        train_data = get_data(config, subset = ['train'], batch_index = batch_index)
-        val_data = get_data(config, subset = ['val'], batch_index = batch_index)
-        # train_data, val_data = get_data(config, subset = ['train', 'val'])
+        train_data, val_data = get_data(config, subset = ['train', 'val'])
         train_data, val_data = map(lambda data: clean_data(data, config), [train_data, val_data])
         tsp, train_dataset = preprocess(train_data, config, tsp=None, fit = True)
         _, val_dataset = preprocess(val_data, config, tsp=tsp, fit = False)
