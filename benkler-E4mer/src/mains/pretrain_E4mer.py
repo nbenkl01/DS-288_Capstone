@@ -29,7 +29,7 @@ def pretrain_E4mer_base():
                         pretrained_model_dir=os.path.join(ROOT_DIR, "checkpoint/unlabelled_pretrain/output/checkpoint-409216"),
                         checkpoint_dir=os.path.join(ROOT_DIR, "checkpoint/unlabelled_pretrain"),
                         save_dir=os.path.join(ROOT_DIR, "models/unlabelled_pretrain"),
-                        run_name=f"unlabelled_pretrain_2024-11-07 17:43:20",
+                        run_name=f"unlabelled_pretrain_fromCheckpoint_2024-11-07 17:43:20",
                         batch_train=False,
                         stride=1,
                         train_epochs=10,
