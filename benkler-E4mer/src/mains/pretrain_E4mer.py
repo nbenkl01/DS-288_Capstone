@@ -5,19 +5,35 @@ import argparse
 from src.utils.config import Config
 from src.STATIC import ROOT_DIR
 
+# def pretrain_E4mer_base():
+#     config = Config(dataset_code='unlabelled', 
+#                     task='masked_prediction',
+#                     input_columns=['acc_l2_mean','hrv_cvsd','eda_tonic_mean','eda_phasic_mean'],
+#                     id_columns=['source_id'],
+#                     finetune=False,
+#                     checkpoint_dir=os.path.join(ROOT_DIR, "checkpoint/unlabelled_pretrain"),
+#                     save_dir=os.path.join(ROOT_DIR, "models/unlabelled_pretrain"),
+#                     run_name=f"unlabelled_pretrain_{datetime.today().strftime('%Y-%m-%d %H:%M:%S')}",
+#                     batch_train=False,
+#                     stride=1,
+#                     train_epochs=30,
+#                     )
+#     model.run_training_task(config)
+
 def pretrain_E4mer_base():
     config = Config(dataset_code='unlabelled', 
-                    task='masked_prediction',
-                    input_columns=['acc_l2_mean','hrv_cvsd','eda_tonic_mean','eda_phasic_mean'],
-                    id_columns=['source_id'],
-                    finetune=False,
-                    checkpoint_dir=os.path.join(ROOT_DIR, "checkpoint/unlabelled_pretrain"),
-                    save_dir=os.path.join(ROOT_DIR, "models/unlabelled_pretrain"),
-                    run_name=f"unlabelled_pretrain_{datetime.today().strftime('%Y-%m-%d %H:%M:%S')}",
-                    batch_train=False,
-                    stride=1,
-                    train_epochs=30,
-                    )
+                        task='masked_prediction',
+                        input_columns=['acc_l2_mean','hrv_cvsd','eda_tonic_mean','eda_phasic_mean'],
+                        id_columns=['source_id'],
+                        finetune=True,
+                        pretrained_model_dir=os.path.join(ROOT_DIR, "checkpoint/unlabelled_pretrain/output/checkpoint-409216"),
+                        checkpoint_dir=os.path.join(ROOT_DIR, "checkpoint/unlabelled_pretrain"),
+                        save_dir=os.path.join(ROOT_DIR, "models/unlabelled_pretrain"),
+                        run_name=f"unlabelled_pretrain_2024-11-07 17:43:20",
+                        batch_train=False,
+                        stride=1,
+                        train_epochs=10,
+                        )
     model.run_training_task(config)
 
 def finetune_nurse_SSL(nurse = None):
