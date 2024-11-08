@@ -16,7 +16,7 @@ def pretrain_E4mer_base():
                     run_name=f"unlabelled_pretrain_{datetime.today().strftime('%Y-%m-%d %H:%M:%S')}",
                     batch_train=False,
                     stride=1,
-                    train_epochs=50,
+                    train_epochs=30,
                     )
     model.run_training_task(config)
 
