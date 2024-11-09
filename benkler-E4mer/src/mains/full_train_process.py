@@ -12,9 +12,9 @@ NURSES = ['5C','6B', '7A', '8B', 'DF', 'F5', 'E4',
             'BG']
 
 def main():
-    # pretrain_E4mer_base()
-    # train_WESAD_benchmark()
-    # finetune_stress_E4mer(pretrained_model='unlabelled_pretrain')
+    pretrain_E4mer_base()
+    train_WESAD_benchmark()
+    finetune_stress_E4mer(pretrained_model='unlabelled_pretrain')
     # nurses = os.listdir(os.path.join(ROOT_DIR,'e4data/train_test_split/Nurses'))
     # train_Nurses_benchmark()
     for nurse in NURSES: #listdir will only work on local machine
