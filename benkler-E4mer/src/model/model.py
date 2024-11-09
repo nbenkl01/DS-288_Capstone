@@ -88,6 +88,9 @@ def run_training_task(config):
     model_class = CustomPatchTSMixerForTimeSeriesClassification if config.task == 'classification' else PatchTSMixerForPretraining
     if config.finetune and os.path.exists(config.pretrained_model_dir):
         model = model_class(model_config).from_pretrained(config.pretrained_model_dir)
+        if config.freeze:
+            for param in model.model.parameters():
+                param.requires_grad = False
     else:
         model = model_class(model_config)
 

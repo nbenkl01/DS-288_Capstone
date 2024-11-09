@@ -27,6 +27,7 @@ class Config:
                  train_epochs=100,
                  num_workers=16,
                  batch_size=16,
+                 freeze = False,
                  eval_metric='eval_f1',
                  greater_is_better=True):
 
@@ -37,7 +38,7 @@ class Config:
         self._initialize_data_processing_params(context_length, prediction_length, patch_length, stride, data_batch_size)
 
         self._initialize_logging_params(pretrained_model_dir, checkpoint_dir, save_dir, run_name)
-        self._initialize_training_params(batch_train, batch_val, train_epochs, num_workers, batch_size)
+        self._initialize_training_params(batch_train, batch_val, train_epochs, num_workers, batch_size, freeze)
         self._initialize_evaluation_params(eval_metric, greater_is_better)
 
     def _initialize_task(self, task, finetune):
@@ -65,12 +66,13 @@ class Config:
         self.checkpoint_dir = checkpoint_dir or os.path.join(ROOT_DIR, f"checkpoints/{self.run_name}")
         self.save_dir = save_dir or os.path.join(ROOT_DIR, f"models/{self.run_name}")
 
-    def _initialize_training_params(self, batch_train, batch_val, train_epochs, num_workers, batch_size):
+    def _initialize_training_params(self, batch_train, batch_val, train_epochs, num_workers, batch_size, freeze):
         self.train_epochs = train_epochs
         self.batch_train = batch_train if batch_train is not None else (True if self.data_loc == 'remote' else False)
         self.batch_val = batch_val if batch_val is not None else (True if self.batch_train and self.task == 'masked_prediction' else False)
         self.num_workers = num_workers
         self.batch_size = batch_size
+        self.freeze = freeze
     
     def _initialize_evaluation_params(self, eval_metric, greater_is_better):
         self.eval_metric = eval_metric
