@@ -1,5 +1,5 @@
 import os
-from transformers import EarlyStoppingCallback
+from transformers import EarlyStoppingCallback, AdamW, get_linear_schedule_with_warmup
 from sklearn.metrics import accuracy_score, precision_recall_fscore_support
 import torch
 import numpy as np
@@ -10,6 +10,17 @@ def setup_early_stopping():
         early_stopping_patience=10,
         early_stopping_threshold=0.0001,
     )
+
+def initialize_optimizer_and_scheduler(model, training_args, config):
+    """Initializes the optimizer and scheduler."""
+    optimizer = AdamW(model.parameters(), lr=training_args.learning_rate)
+    total_steps = (len(training_args.train_dataset) // training_args.per_device_train_batch_size) * training_args.num_train_epochs
+    scheduler = get_linear_schedule_with_warmup(
+        optimizer,
+        num_warmup_steps=int(total_steps * 0.1),  # 10% warm-up
+        num_training_steps=total_steps
+    )
+    return optimizer, scheduler
 
 def evaluate_and_save_model(trainer, test_dataset, config):
     """Evaluates the model on the test dataset and saves it to the specified directory."""
