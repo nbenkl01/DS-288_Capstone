@@ -34,8 +34,6 @@ def compute_metrics(eval_pred):
         logits = logits.squeeze()
 
     predictions = np.argmax(logits, axis=-1)
-    print(f'Labels: {labels}')
-    print(f'Predictions: {predictions}')
 
     acc = accuracy_score(labels, predictions)
     precision, recall, f1, _ = precision_recall_fscore_support(labels, predictions, average='weighted', zero_division=0.0)

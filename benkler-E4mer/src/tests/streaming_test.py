@@ -66,6 +66,14 @@ if __name__ == '__main__':
     if 'b' in test_flags:
         config.batch_train = True
         test_full_data_streaming(config)
+    # if 'n' in test_flags:
+    #     config = Config(dataset_code='Nurses', 
+    #                 task='classification',
+    #                 input_columns=['acc_l2_mean','hrv_cvsd','eda_tonic_mean','eda_phasic_mean'],
+    #                 target_columns='binary_stress',
+    #                 id_columns=['subject_id','condition'],
+    #                 data_batch_size=1000,
+    #                 batch_train=False)
 
     if not test_flags:
         print("No tests specified. Use --help to see available options.")
