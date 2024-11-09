@@ -70,7 +70,11 @@ def train_model(model, training_args, early_stopping_callback, config):
     if not config.batch_train:
         # If batch training is disabled, fetch and preprocess all data at once
         train_data, val_data = get_data(config, subset = ['train', 'val'])
+        print(f"Train size {len(train_data)}")
+        print(f"Val size {len(val_data)}")
         train_data, val_data = map(lambda data: clean_data(data, config), [train_data, val_data])
+        print(f"Train label dist {train_data.label.value_counts()}")
+        print(f"Val label dist {val_data.label.value_counts()}")
         tsp, train_dataset = preprocess(train_data, config, tsp=None, fit = True)
         _, val_dataset = preprocess(val_data, config, tsp=tsp, fit = False)
         trainer = initialize_trainer(model, training_args, train_dataset, val_dataset, early_stopping_callback, config)
