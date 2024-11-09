@@ -16,7 +16,7 @@ def main():
     train_WESAD_benchmark()
     finetune_stress_E4mer(pretrained_model='unlabelled_pretrain')
     # nurses = os.listdir(os.path.join(ROOT_DIR,'e4data/train_test_split/Nurses'))
-    # train_Nurses_benchmark()
+    train_Nurses_benchmark()
     for nurse in NURSES: #listdir will only work on local machine
         finetune_nurse_SSL(nurse)
         finetune_stress_E4mer(pretrained_model = f"Nurse{nurse}_SSLFinetune")

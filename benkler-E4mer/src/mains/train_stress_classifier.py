@@ -40,6 +40,7 @@ def finetune_stress_E4mer(pretrained_model='unlabelled_pretrain'):
                     target_columns='binary_stress',
                     id_columns=['subject_id','condition'],
                     finetune=True,
+                    freeze = False if pretrained_model == 'unlabelled_pretrain' else True,
                     pretrained_model_dir=os.path.join(ROOT_DIR, "models", pretrained_model),
                     checkpoint_dir=os.path.join(ROOT_DIR, f"checkpoint/stress_event_finetune/{pretrained_model}"),
                     save_dir=os.path.join(ROOT_DIR, f"models/stress_event_finetune/{pretrained_model}"),
