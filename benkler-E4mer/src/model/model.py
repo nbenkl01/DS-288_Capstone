@@ -69,7 +69,9 @@ def train_model(model, training_args, early_stopping_callback, config):
     
     if not config.batch_train:
         # If batch training is disabled, fetch and preprocess all data at once
-        train_data, val_data = get_data(config, subset = ['train', 'val'])
+        # train_data, val_data = get_data(config, subset = ['train', 'val'])
+        train_data = get_data(config, subset = ['train'])
+        val_data = get_data(config, subset = ['val'])
         print(f"Train size {len(train_data)}")
         print(f"Val size {len(val_data)}")
         print(f"Train bs dist {train_data.binary_stress.value_counts()}")
