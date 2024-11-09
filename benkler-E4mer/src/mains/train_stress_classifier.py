@@ -8,6 +8,7 @@ from src.STATIC import ROOT_DIR
 def train_WESAD_benchmark():
     config = Config(dataset_code='WESAD', 
                     task='classification',
+                    test_dataset_code = 'Nurses/labelled',
                     input_columns=['acc_l2_mean','hrv_cvsd','eda_tonic_mean','eda_phasic_mean'],
                     target_columns='binary_stress',
                     id_columns=['subject_id','condition'],
