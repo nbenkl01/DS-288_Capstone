@@ -33,8 +33,9 @@ def train_Nurses_benchmark():
                     )
     model.run_training_task(config)
 
-def finetune_stress_E4mer(pretrained_model='unlabelled_pretrain'):
+def finetune_stress_E4mer(pretrained_model='unlabelled_pretrain', test_dataset_code = None):
     config = Config(dataset_code='WESAD', 
+                    test_dataset_code = test_dataset_code,
                     task='classification',
                     input_columns=['acc_l2_mean','hrv_cvsd','eda_tonic_mean','eda_phasic_mean'],
                     target_columns='binary_stress',
@@ -53,6 +54,7 @@ def main():
     parser = argparse.ArgumentParser(description="Train or fine-tune E4mer model on WESAD benchmark.")
     parser.add_argument("--mode", type=str, choices=["train", "finetune"], required=True, help="Choose between training or fine-tuning.")
     parser.add_argument("--dataset", type=str, choices=["WESAD", "Nurses"], default='WESAD', help="Choose a dataset.")
+    parser.add_argument("--test_Nurses", type=str, default=None, help="Specify the pretrained model directory for fine-tuning.")
     parser.add_argument("--pretrained_model", type=str, default="unlabelled_pretrain", help="Specify the pretrained model directory for fine-tuning.")
 
     args = parser.parse_args()
@@ -63,7 +65,10 @@ def main():
         else:
             train_Nurses_benchmark()
     elif args.mode == "finetune":
-        finetune_stress_E4mer(args.pretrained_model)
+        if args.test_Nurses is not None:
+            finetune_stress_E4mer(args.pretrained_model, test_dataset_code=f"Nurses/{args.test_Nurses}/labelled")
+        else:
+            finetune_stress_E4mer(args.pretrained_model)
 
 if __name__ == "__main__":
     main()

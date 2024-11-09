@@ -48,6 +48,7 @@ def finetune_nurse_SSL(nurse = None):
                     run_name=f"Nurse{nurse or 's'}_SSLFinetune_{datetime.today().strftime('%Y-%m-%d %H:%M:%S')}",
                     batch_train=False,
                     stride=1,
+                    train_epochs=30,
                     )
     model.run_training_task(config)
 

@@ -29,12 +29,13 @@ class Config:
                  batch_size=16,
                  freeze = False,
                  eval_metric='eval_f1',
-                 greater_is_better=True):
+                 greater_is_better=True,
+                 test_dataset_code = None):
 
         # Initialize related configuration sections
         self._initialize_task(task, finetune)
 
-        self._initialize_dataset_params(dataset_code, input_columns, target_columns, id_columns, timestamp_column)
+        self._initialize_dataset_params(dataset_code, input_columns, target_columns, id_columns, timestamp_column, test_dataset_code)
         self._initialize_data_processing_params(context_length, prediction_length, patch_length, stride, data_batch_size)
 
         self._initialize_logging_params(pretrained_model_dir, checkpoint_dir, save_dir, run_name)
@@ -45,8 +46,9 @@ class Config:
         self.finetune = finetune
         self.task = task
         
-    def _initialize_dataset_params(self, dataset_code, input_columns, target_columns, id_columns, timestamp_column):
+    def _initialize_dataset_params(self, dataset_code, input_columns, target_columns, id_columns, timestamp_column, test_dataset_code):
         self.dataset_code = dataset_code
+        self.test_dataset_code = test_dataset_code or dataset_code
         self.input_columns = input_columns
         self.target_columns = target_columns or []
         self.id_columns = id_columns or []

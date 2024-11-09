@@ -104,3 +104,11 @@ def run_training_task(config):
     _, test_dataset = preprocess(test_data, config, tsp=tsp, fit = False)
 
     evaluate_and_save_model(trainer, test_dataset, config)
+    if config.test_dataset_code != config.dataset_code:
+        config.set_attribute(dataset_code = config.test_dataset_code)
+        test_data = get_data(config, subset = ['test'])
+        test_data = clean_data(test_data, config)
+        _, test_dataset = preprocess(test_data, config, tsp=tsp, fit = False)
+        results = trainer.evaluate(test_dataset)
+        print("Transfer Learning Test result:")
+        print(results)
