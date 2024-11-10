@@ -37,15 +37,15 @@ def pretrain_E4mer_base():
 #     model.run_training_task(config)
 
 def finetune_nurse_SSL(nurse = None):
-    config = Config(dataset_code=f"Nurses/{nurse or '.'}/unlabelled",
+    config = Config(dataset_code=f"Nurses/{nurse}/unlabelled" if nurse is not None else f"Nurses/unlabelled",
                     task='masked_prediction',
                     input_columns=['acc_l2_mean','hrv_cvsd','eda_tonic_mean','eda_phasic_mean'],
                     id_columns=['subject_id','session_id'],
                     finetune=True,
                     pretrained_model_dir=os.path.join(ROOT_DIR, "models/unlabelled_pretrain"),
-                    checkpoint_dir=os.path.join(ROOT_DIR, f"checkpoint/Nurse{nurse or 's'}_SSLFinetune"),
-                    save_dir=os.path.join(ROOT_DIR, f"models/Nurse{nurse or 's'}_SSLFinetune"), 
-                    run_name=f"Nurse{nurse or 's'}_SSLFinetune_{datetime.today().strftime('%Y-%m-%d %H:%M:%S')}",
+                    checkpoint_dir=os.path.join(ROOT_DIR, f"checkpoint/Nurse{nurse}_SSLFinetune") if nurse is not None else os.path.join(ROOT_DIR, "checkpoint/Nurses_SSLFinetune"),
+                    save_dir=os.path.join(ROOT_DIR, f"models/Nurse{nurse}_SSLFinetune") if nurse is not None else os.path.join(ROOT_DIR, "models/Nurses_SSLFinetune"), 
+                    run_name=f"Nurse{nurse}_SSLFinetune_{datetime.today().strftime('%Y-%m-%d %H:%M:%S')}" if nurse is not None else f"Nurses_SSLFinetune_{datetime.today().strftime('%Y-%m-%d %H:%M:%S')}",
                     batch_train=False,
                     stride=1,
                     train_epochs=30,

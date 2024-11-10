@@ -67,7 +67,8 @@ def main():
             train_Nurses_benchmark()
     elif args.mode == "finetune":
         if args.test_Nurses is not None:
-            finetune_stress_E4mer(args.pretrained_model, test_dataset_code=f"Nurses/{args.test_Nurses}/labelled")
+            tdc = f"Nurses/{args.test_Nurses}/labelled" if args.test_Nurses != '.' else "Nurses/labelled"
+            finetune_stress_E4mer(args.pretrained_model, test_dataset_code=tdc)
         else:
             finetune_stress_E4mer(args.pretrained_model)
 
