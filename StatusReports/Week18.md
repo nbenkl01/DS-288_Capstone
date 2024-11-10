@@ -1,5 +1,4 @@
 ### Fails
-- Failed to build virtual env necessary to remotely execute code on tufts servers (disk space allocation issue)
 - Data streaming & training showed new issue where ssh connection to host drops during data fetching
 - Failed to pretrain SSL models due to above failure (See general progress)
 
