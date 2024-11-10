@@ -4,7 +4,7 @@ Repository for work surrounding Tufts MSDS Capstone project.
 
 ## Mission Statement (Project Proposal)
 
-Our mission is to explore the use of self-supervised learning (SSL) to improve the transferability of physiological data modeling from controlled laboratory settings, where precise labels are readily available, to real-world environments, where such labels are scarce. In particular, we employ personalized representation learning to support individualized results. In pursuit of this mission, we study physiological data collected from non-invasive wearables to detect acute psychological stress events. Through this work, we aim to enable better transfer of insights from controlled environments to practical, scalable solutions for real-world use, ultimately fostering greater adaptability, accessibility, and efficacy in personalized physiological modeling.
+Our mission is to explore the use of self-supervised learning (SSL) in improving transferability of physiological data models from controlled laboratory settings, where precise labels are readily available, to real-world environments, where such labels are scarce. In particular, we employ personalized representation learning to support individualized results. In pursuit of this mission, we study the use of physiological data from non-invasive wearables in detecting acute psychological stress events. Through this work, we aim to enable better transfer insights from controlled environments to practical scenarios, ultimately fostering greater adaptability, accessibility, and efficacy of personalized physiological modeling.
 
 
 ## Weekly Status Report (Weeks 17 & 18--see ./StatusReports/ for Week 16)
