@@ -1,47 +1,9 @@
-# Data Science Capstone Project
-
-Repository for work surrounding Tufts MSDS Capstone project.
-
-## Mission Statement (Project Proposal)
-
-Our mission is to explore the use of self-supervised learning (SSL) to improve the transferability of physiological data modeling from controlled laboratory settings, where precise labels are readily available, to real-world environments, where such labels are scarce. In particular, we employ personalized representation learning to support individualized results. In pursuit of this mission, we study physiological data collected from non-invasive wearables to detect acute psychological stress events. Through this work, we aim to enable better transfer of insights from controlled environments to practical, scalable solutions for real-world use, ultimately fostering greater adaptability, accessibility, and efficacy in personalized physiological modeling.
-
-
-## Weekly Status Report (Weeks 17 & 18--see ./StatusReports/ for Week 16)
-### Week 18
-#### Fails
-- Failed to build virtual env necessary to remotely execute code on tufts servers (disk space allocation issue)
-- Data streaming & training showed new issue where ssh connection to host drops during data fetching
-- Failed to pretrain SSL models due to above failure (See general progress)
-
-#### Successes
-- Finished modified schedule
-- Resolved issues with remote env setup
-- Developed batch data fetching & training system to avoid process crashing during pretraining
-- Trained baseline WESAD & Nurses stress event detection classifiers
-
-##### General Progress
-- Ensured all training code works as hoped for below processes (by testing over samples for 1 epoch) so ready for full training run once data streaming failure is resolved:
-  - Pretrain E4Mix base
-  - Tune E4Mix nurse (baseline & individual)
-  - Finetune all pretrained E4Mix models on:
-    - WESAD binary stress state classification
-- Began writing evaluation scripts
-
-#### Goals
-- Resolve data streaming issue
-- Finish masked prediction pretraining
-- Finish stress event classification finetuning
-- Do model evaluation
-- Update Mission Statement
-
-### Week 17
-#### Fails
+### Fails
 - Failed to properly parse and understand exact nature of training code from E4selflearning to an extent necessary that I would be comfortable using it.
 - Failed to build virtual env necessary to remotely execute code on tufts servers (disk space allocation issue)
 - Still no modified schedule, need to figure out what is plausible
 
-#### Successes
+### Successes
 - Scrapped open-source E4selflearning aproach in favor of building my own (I put this under successes b/c I think it was the correct decision):
   - Weighted oportunity cost of adequately unravelling existing code vs. scrapping that codebase and building mine from the start & decided I would back the second option
 - Shifted data processing approach:
@@ -69,7 +31,7 @@ Our mission is to explore the use of self-supervised learning (SSL) to improve t
 - Attempted to stage code to run on tufts servers.
 - Working w/ tufts eecs staff to help address (disk space allocation issue)
 
-#### Goals
+### Goals
 - Finish modified schedule
 - Resolve issues with remote env setup
 - Pretrain E4Mix base
