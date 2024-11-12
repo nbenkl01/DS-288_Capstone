@@ -200,6 +200,7 @@ UNLABELLED_DEFAULT_ARGS = {
     'save_dir': os.path.join(ROOT_DIR, "models/unlabelled_pretrain"),
     'run_name': f"unlabelled_pretrain_{datetime.today().strftime('%Y-%m-%d %H:%M:%S')}",
     'stride': 1,
+    'batch_train': False,
 }
 
 Nurses_FINETUNE_ARGS = UNLABELLED_DEFAULT_ARGS.copy()
