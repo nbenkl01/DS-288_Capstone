@@ -36,13 +36,14 @@ def train_Nurses_benchmark():
 
 def finetune_stress_E4mer(pretrained_model='unlabelled_pretrain', test_dataset_code = None):
     config = Config(dataset_code='WESAD', 
-                    test_dataset_code = test_dataset_code,
+                    # test_dataset_code = test_dataset_code,
                     task='classification',
                     input_columns=['acc_l2_mean','hrv_cvsd','eda_tonic_mean','eda_phasic_mean'],
                     target_columns='binary_stress',
                     id_columns=['subject_id','condition'],
                     finetune=True,
-                    freeze = False if pretrained_model == 'unlabelled_pretrain' else True,
+                    # freeze = False if pretrained_model == 'unlabelled_pretrain' else True,
+                    freeze = True,
                     pretrained_model_dir=os.path.join(ROOT_DIR, "models", pretrained_model),
                     checkpoint_dir=os.path.join(ROOT_DIR, f"checkpoint/stress_event_finetune/{pretrained_model}"),
                     save_dir=os.path.join(ROOT_DIR, f"models/stress_event_finetune/{pretrained_model}"),
