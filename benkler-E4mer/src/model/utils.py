@@ -5,10 +5,10 @@ from sklearn.metrics import accuracy_score, precision_recall_fscore_support
 import torch
 import numpy as np
 
-def setup_early_stopping():
+def setup_early_stopping(config):
     """Creates an early stopping callback to stop training when improvement stalls."""
     return EarlyStoppingCallback(
-        early_stopping_patience=10,
+        early_stopping_patience= 20 if config.task == 'classification' else 3,
         early_stopping_threshold=0.0001,
     )
 

@@ -86,7 +86,7 @@ def run_training_task(config):
     """
     model_config = configure_model(config)
     training_args = configure_training_args(config)
-    early_stopping_callback = setup_early_stopping()
+    early_stopping_callback = setup_early_stopping(config)
 
     model_class = CustomPatchTSMixerForTimeSeriesClassification if config.task == 'classification' else PatchTSMixerForPretraining
     if config.finetune and os.path.exists(config.pretrained_model_dir):
