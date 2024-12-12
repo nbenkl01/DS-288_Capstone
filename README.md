@@ -1,4 +1,9 @@
-# Data Science Capstone Project
+# Finding the Knowledge in Noise: Enhancing Physiological Model Transfer via Individualized Representation Learning. 
+<!-- (Data Science Capstone Project) -->
+<!-- Leveraging Unlabelled Physiomarker Data for Improved Model Transfer via Individualized Representation Learning -->
+<!-- Unlocking the Potential of Personalized Representation Learning for Physiological Model Transfer -->
+<!-- From Lab to Life: Personalized Stress Modeling with Self-Supervised Learning -->
+
 
 Repository for work surrounding Tufts MSDS Capstone project.
 
