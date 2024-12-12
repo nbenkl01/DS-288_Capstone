@@ -152,6 +152,7 @@ class CustomPatchTSMixerForPreTrainingOutput(ModelOutput):
     loss: Optional[torch.FloatTensor] = None
     prediction_outputs: torch.FloatTensor = None
     true_values: torch.FloatTensor = None
+    mask: torch.Tensor = None
     last_hidden_state: torch.FloatTensor = None
     hidden_states: Optional[Tuple[torch.FloatTensor]] = None
 
@@ -211,6 +212,7 @@ class CustomPatchTSMixerForPretraining(PatchTSMixerForPretraining):
                     loss_val,
                     x_hat,
                     model_output.patch_input,
+                    model_output.mask,
                     model_output.last_hidden_state,
                     model_output.hidden_states,
                 ]
@@ -220,6 +222,7 @@ class CustomPatchTSMixerForPretraining(PatchTSMixerForPretraining):
             loss=loss_val,
             prediction_outputs=x_hat,  # tensor [batch_size x nvars x num_patch x patch_length]
             true_values=model_output.patch_input,
+            mask=model_output.mask,
             last_hidden_state=model_output.last_hidden_state,  # x: [batch_size x nvars x num_patch x d_model]
             hidden_states=model_output.hidden_states,
         )
